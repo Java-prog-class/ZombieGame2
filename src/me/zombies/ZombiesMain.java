@@ -18,8 +18,12 @@ public class ZombiesMain {
 	static int panW = 800, panH = 500;
 	static int mapSpeed = 0;
 	static int round = 1;
+	Player player = new Player();
+	Zombie ztest;
+	
 	ZombiesMain(){
 		setup();
+		ztest = new Zombie("light");
 	}
 
 
@@ -51,6 +55,7 @@ public class ZombiesMain {
 			if (!screenInit) {	//only do this the very first time that the screen is painted
 				player.x=panW/2;				
 				player.y=panH/2;
+				
 				//System.out.println(panW + " " + panH);
 				if (panW > 10) screenInit = true;
 			}
