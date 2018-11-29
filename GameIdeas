@@ -8,6 +8,7 @@
 *   - Map
 *  ======================
 
+	Weapons should be a new job.
 
 * =======================
 * ======= Player ========
@@ -40,7 +41,7 @@
 * ====================
 * - Randomly generates buildings on the map that are spaced out
 * - Powerups randomly spawn on the map (Speed Buff, Extra Health, Health Restore, ETC)
-* - Powerups uses images from Internet
+* - Powerups uses images from internet
 * - Background Music
 *
 */
