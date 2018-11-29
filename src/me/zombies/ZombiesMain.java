@@ -11,7 +11,9 @@ public class ZombiesMain {
 
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
-	int panW = 800, panH = 500;
+	static int panW = 800, panH = 500;
+	static int mapSpeed = 0;
+	static int round = 1;
 	
 	
 	ZombiesMain(){

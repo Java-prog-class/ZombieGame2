@@ -1,6 +1,6 @@
 /* ====================== 
-*   Our team is divide up
-*    into three differnt 
+*   Our team is to divide up
+*    into three different 
 *   roles for them to 
 *   work on
 *   - Player
@@ -14,20 +14,20 @@
 * =======================
 * - Player stays stationary while the map moves around him
 * - When a player hits a building they stop moving in the direction
-* - Either having an HP Bar or Hearts to repersent players current health
+* - Either having an HP Bar or Hearts to represent players current health
 *     -Swapping Weapons
 *     - Reload,Shooting,Swapping weapon sounds
 *     - Sound for when zombies hit player 
 * - Players has to reload to keep shooting, doesn't reload automatically player has to control it
 * - Players stats stay the same as the waves go on
 * - Players rotation follows the mouse for shooting
-* - Weapon is visable on player and players circle stays still while the weapon rotates around the center point of the player
-* - Weapons image grabbed from internet
+* - Weapon is visible on player and players circle stays still while the weapon rotates around the center point of the player
+* - Weapons image grabbed from Internet
 *
 * ======================
 * ======= Zombie =======
 * ======================
-* - The amount of zombies is mulitiplied by the current wave
+* - The amount of zombies is multiplied by the current wave
 * - Different zombies with different stats
 * - Zombie stats increase as the waves go on
 * - If a zombie hits a wall it follows the wall till it can continue to move
@@ -40,7 +40,7 @@
 * ====================
 * - Randomly generates buildings on the map that are spaced out
 * - Powerups randomly spawn on the map (Speed Buff, Extra Health, Health Restore, ETC)
-* - Powerups uses images from internet
+* - Powerups uses images from Internet
 * - Background Music
 *
 */

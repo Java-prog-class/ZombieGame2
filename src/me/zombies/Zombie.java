@@ -14,6 +14,7 @@ class Zombie {
 	
 	
 	static void createZombie() {
+		if (count > ZombiesMain.round*10) return; 
 		int screenW = ZombiesMain.panW;
 		int screenH = ZombiesMain.panH;
 		//Set spawning position
