@@ -20,15 +20,18 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	public static void main(String[] args) {
 		new ZombiesMain();
 	}
-
-	JFrame window = new JFrame();
-	DrawingPanel drPanel;
+	
 	static int panW = 800, panH = 500;
 	static int round = 1;
-	Zombie ztest;
-	Player player = new Player();
 	static int mapSpeed = 0;
+	
+	JFrame window = new JFrame();
+	DrawingPanel drPanel;
+	Zombie ztest;
+	Player player = new Player();	
 	private BufferedImage backImg = null;
+	Weapon[] weapons = new Weapon[3]; 
+	
 	
 	ZombiesMain(){
 		setup();
@@ -44,7 +47,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		drPanel = new DrawingPanel();
 		drPanel.addKeyListener(this);
 		window.add(drPanel);
-
+		weapons[0] = new Weapon(Weapon.PISTOL);
+		weapons[1] = new Weapon(Weapon.RIFLE);
+		weapons[2] = new Weapon(Weapon.SHOTGUN);
+		
+		player.currentWeapon = weapons[0];
+		
 		try
 		{
 		    backImg = ImageIO.read( new File("desert.jpg" ));
@@ -112,6 +120,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S) {
 			movePlayer("down");
+		}
+		if (e.getKeyCode() == KeyEvent.VK_Q) {
+			movePlayer("Swap");
+			int weaponnum = player.currentWeapon.type;
+			weaponnum++;
+			
+			player.currentWeapon = weapons[weaponnum];
+			System.out.println(player.currentWeapon.name);
+			
 		}
 	}
 
