@@ -16,11 +16,10 @@ public class ZombiesMain {
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
 	static int panW = 800, panH = 500;
-	static int mapSpeed = 0;
 	static int round = 1;
-	Player player = new Player();
 	Zombie ztest;
-	
+	Player player = new Player();
+	static int mapSpeed = 0;
 	ZombiesMain(){
 		setup();
 		ztest = new Zombie("light");
