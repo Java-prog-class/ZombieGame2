@@ -1,26 +1,33 @@
 package me.zombies;
 
-class Weapons {
+class Weapon {
 	String name;
+	int type;
 	int maxAmmo;
 	private int damage;
 	private int ammo;
+	//these must be sequential so that we can flip through them  
+	static final int PISTOL = 1;
+	static final int RIFLE = 2;
+	static final int SHOTGUN = 3;
 	
-	Weapons(int type){
+	Weapon(int type){
+		this.type = type; // store the weapon number
+		
 		switch(type) {
-		case 1:
+		case PISTOL:
 			damage = 100;
 			ammo = 30;
 			name = "pistol";
 			break;
-		case 2:
+		case RIFLE:
 			damage = 150;
 			ammo = 15;
-			name = "pistol";
-		case 3:
+			name = "rifle";
+		case SHOTGUN:
 			damage = 200;
 			ammo = 5;
-			name = "pistol";
+			name = "shotgun";
 		}
 	}
 	

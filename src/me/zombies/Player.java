@@ -7,6 +7,7 @@ import javax.swing.JPanel;
  class Player{
 	int x,y,r;
 	static int HP;
+	Weapon currentWeapon = null;
 
 	Player(){
 		x=ZombiesMain.panW/2;
