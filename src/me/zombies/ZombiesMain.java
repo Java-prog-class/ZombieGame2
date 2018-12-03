@@ -125,7 +125,9 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			movePlayer("Swap");
 			int weaponnum = player.currentWeapon.type;
 			weaponnum++;
-			
+			if(weaponnum > weapons.length) {
+				weaponnum = 0;
+			}
 			player.currentWeapon = weapons[weaponnum];
 			System.out.println(player.currentWeapon.name);
 			
