@@ -9,13 +9,13 @@ class Zombie {
 	String type = "medium";	//light, medium, or heavy
 	private int zx, zy;	//Position;
 	private int vx, vy;	//Speed	
-	private int r = 15;
+	private int r = 15;	//Radius of drawing
 	
 	private static int count = 0;
 	
 	Zombie(String type) {
 		
-		if (count > ZombiesMain.round*10) return; 
+		if (count > ZombiesMain.round*10) return; //Will be moved to ZomibiesMain if they are spawned from there
 		int screenW = ZombiesMain.panW;
 		int screenH = ZombiesMain.panH;
 		//Set spawning position

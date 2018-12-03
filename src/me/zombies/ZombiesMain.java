@@ -4,10 +4,18 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class ZombiesMain {
+public class ZombiesMain implements MouseListener, KeyListener{
 
 	public static void main(String[] args) {
 		new ZombiesMain();
@@ -20,6 +28,8 @@ public class ZombiesMain {
 	Zombie ztest;
 	Player player = new Player();
 	static int mapSpeed = 0;
+	private BufferedImage backImg = null;
+	
 	ZombiesMain(){
 		setup();
 		ztest = new Zombie("light");
@@ -32,13 +42,24 @@ public class ZombiesMain {
 
 		window.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		drPanel = new DrawingPanel();
+		drPanel.addKeyListener(this);
 		window.add(drPanel);
 
+		try
+		{
+		    backImg = ImageIO.read( new File("desert.jpg" ));
+		}
+		catch ( IOException exc ){}
+		
 		window.setVisible(true);
+		drPanel.requestFocus(); //do we only have to do this once?
+		
+		drPanel.repaint();
 	}
-
-
-
+	
+	void movePlayer(String direction) {
+		if (direction.equals("up")) System.out.println("Up");
+	}
 
 
 	private class DrawingPanel extends JPanel {
@@ -49,6 +70,7 @@ public class ZombiesMain {
 
 		@Override
 		public void paintComponent(Graphics g) {
+			//drPanel.requestFocus();
 			panH = this.getHeight();
 			panW = this.getWidth();
 			if (!screenInit) {	//only do this the very first time that the screen is painted
@@ -58,17 +80,68 @@ public class ZombiesMain {
 				//System.out.println(panW + " " + panH);
 				if (panW > 10) screenInit = true;
 			}
-			super.paintComponent(g); //clear screen and repaint using background colour
+			super.paintComponent(g); //clear screen and repaint using background color
 			Graphics2D g2 = (Graphics2D) g;		
 			
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 			g.setColor(Color.GREEN.darker());
-			//g.drawLine(0, panSize/2, panSize/2, panSize/2);
-			//g.drawLine(player, panSize/2, panSize/2, panSize);
+			g.drawImage(backImg, 100, 100, 100, 100, drPanel);	//background image
 			g.setColor(Color.BLUE);
 			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);	
 			
 		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_D) {
+			System.out.println("right");
+			movePlayer("right");
+		}
+		if (e.getKeyCode() == KeyEvent.VK_W) {
+			movePlayer("up");
+		}
+		if (e.getKeyCode() == KeyEvent.VK_A) {
+			movePlayer("left");
+		}
+		if (e.getKeyCode() == KeyEvent.VK_S) {
+			movePlayer("down");
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		
 	}
 }
