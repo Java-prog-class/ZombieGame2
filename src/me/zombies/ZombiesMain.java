@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -25,14 +26,14 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	DrawingPanel drPanel;
 	static int panW = 800, panH = 500;
 	static int round = 1;
-	Zombie ztest;
 	Player player = new Player();
 	static int mapSpeed = 0;
 	private BufferedImage backImg = null;
+	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	
 	ZombiesMain(){
 		setup();
-		ztest = new Zombie("light");
+		spawnEnemies(round*10);
 	}
 
 
@@ -57,8 +58,21 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		drPanel.repaint();
 	}
 	
+	void spawnEnemies(int n) {
+		for (int i = 0; i < n; i++) {
+			int rnd = (int) (Math.random()*3)+1;
+			Zombie z = null;
+			if (rnd == 1) z = new Zombie("light"); 
+			if (rnd == 2) z = new Zombie("medium"); 
+			if (rnd == 3) z = new Zombie("heavy"); 
+			zombies.add(z);
+		}
+	}
+	
 	void movePlayer(String direction) {
-		if (direction.equals("up")) System.out.println("Up");
+		if (direction.equals("up")) {
+			mapSpeed = 10;
+		}
 	}
 
 
@@ -88,8 +102,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.setColor(Color.GREEN.darker());
 			g.drawImage(backImg, 100, 100, 100, 100, drPanel);	//background image
 			g.setColor(Color.BLUE);
-			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);	
-			
+			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
+			for (Zombie z : zombies) {
+				if (z.type.equals("light")) g.setColor(Color.RED.brighter());
+				if (z.type.equals("medium")) g.setColor(Color.RED);
+				if (z.type.equals("heavy")) g.setColor(Color.RED.darker());
+				z.paint(g);
+			}
 		}
 	}
 
@@ -100,17 +119,20 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_D) {
+		if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			System.out.println("right");
 			movePlayer("right");
 		}
-		if (e.getKeyCode() == KeyEvent.VK_W) {
+		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {
+			System.out.println("up");
 			movePlayer("up");
 		}
-		if (e.getKeyCode() == KeyEvent.VK_A) {
+		if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
+			System.out.println("left");
 			movePlayer("left");
 		}
-		if (e.getKeyCode() == KeyEvent.VK_S) {
+		if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
+			System.out.println("down");
 			movePlayer("down");
 		}
 	}
