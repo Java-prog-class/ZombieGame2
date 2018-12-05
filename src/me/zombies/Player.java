@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 
  class Player{
 	int x,y,r;
+	int vx = 10, vy = 10;
 	static int HP;
 	Weapon currentWeapon = null;
 
