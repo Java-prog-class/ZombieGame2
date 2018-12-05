@@ -40,7 +40,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	
 	ZombiesMain(){
 		setup();
-		spawnEnemies(round*10);
+		spawnEnemies(1);
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -123,10 +123,40 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.zx += z.vx;
 				z.zy += z.vy;
 			}
-			if (z.zx == panW/2 && z.zy == panH/2) {
-				zombies.remove(z);
-				player.decreaseHP(100, z);
+			int o = z.zx-mapX;
+			int p = z.zy-mapY;
+//			System.out.println(o + " " + p + "     " + panW/2 + " " + panH/2);
+//			
+//			if (z.zx-mapX >= panW/2-player.r)System.out.println("left");
+//			if (z.zx-mapX <= panW/2-player.r)System.out.println("right");
+//			if (z.zy-mapY >= panH/2-player.r)System.out.println("above");
+//			if (z.zy-mapY <= panH/2-player.r)System.out.println("below");
+			
+			if (z.zx+z.r >= panW/2-player.r && z.zx+z.r <= panW/2+player.r
+					|| z.zx-z.r <= panW/2-player.r && z.zx-z.r >= panW/2+player.r) {
+				if (z.zy+z.r >= panH/2-player.r && z.zy+z.r <= panH/2+player.r
+						|| z.zy-z.r <= panH/2-player.r && z.zy-z.r >= panH/2+player.r) {
+					player.decreaseHP(100, z);
+					zombies.remove(z);
+					break;
+				}
 			}
+			
+			
+//			if (z.zx-mapX >= panW/2-player.r || z.zx-mapX <= panW/2-player.r
+//					&& z.zy-mapY >= panH/2-player.r || z.zy-mapY <= panH/2-player.r) System.out.println("in line");
+			
+//			if (panW/2+player.r >= z.zx-mapX || panW/2-player.r <= z.zx-mapX
+//					&& panH/2+player.r >= z.zy-mapY || panW/2+player.r <= z.zx-mapX) {
+//				System.out.println("hit");
+//				zombies.remove(z);
+//				player.decreaseHP(100, z);
+//				break;
+//			}
+//			if (z.zx-mapX == panW/2+player.r || z.zx-mapX == panW/2-player.r
+//					&& z.zy-mapY == panH/2+player.r || z.zy-mapY == panW/2-player.r) {
+//				
+//			}
 			
 		}
 	}
@@ -163,6 +193,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.drawImage(backImg, 100, 100, 100, 100, drPanel);	//background image
 			g.setColor(Color.BLUE);
 			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
+			
+			g.drawRect(10, 10, 500, 20);
+			g.setColor(Color.RED);
+			g.fillRect(10, 10, Player.HP/2, 20);
 			for (Zombie z : zombies) {
 				if (z.type.equals("light")) g.setColor(Color.RED.brighter());
 				if (z.type.equals("medium")) g.setColor(Color.RED);
