@@ -1,11 +1,11 @@
 package me.zombies;
 
-import java.awt.Color;
-
-import javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.*;
 
  class Player{
 	int x,y,r;
+	int vx = 10, vy = 10;
 	static int HP;
 	Weapon currentWeapon = null;
 
