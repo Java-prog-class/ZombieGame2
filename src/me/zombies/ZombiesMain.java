@@ -50,8 +50,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 		});
 		moveTimer.start();
-		
-		
 	}
 
 
@@ -126,13 +124,19 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.zx += z.vx;
 				z.zy += z.vy;
 			}
+			
+			//Detect if zombie and player are in the same location
+			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
+					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
+				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
+						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
+					player.decreaseHP(100, z);
 					
-			if (z.zx-mapX+z.r >= panW/2-player.r && z.zx-mapX+z.r <= panW/2+player.r
-					|| z.zx-mapX-z.r <= panW/2-player.r && z.zx-mapX-z.r >= panW/2+player.r) {
-				if (z.zy-mapY+z.r >= panH/2-player.r && z.zy-mapY+z.r <= panH/2+player.r
-						|| z.zy-mapY-z.r <= panH/2-player.r && z.zy-mapY-z.r >= panH/2+player.r) {
-					player.decreaseHP(10, z);
-					zombies.remove(z);
+					//Move zombie away after hitting player
+					if (player.x+player.r > z.zx) z.zx -= 10;	//Approach from right
+					if (player.x+player.r < z.zx) z.zx += 10;	//Approach from left
+					if (player.y < z.zy) z.zy += 10;	//Approach from beneath
+					if (player.y > z.zy) z.zy -= 10;	//Approach from above
 					break;
 				}
 			}		
