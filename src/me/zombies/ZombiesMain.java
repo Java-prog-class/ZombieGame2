@@ -40,15 +40,18 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	
 	ZombiesMain(){
 		setup();
-		spawnEnemies(1);
+		spawnEnemies(round*10);
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				moveZombies();
 				drPanel.repaint();
+				if (Player.HP <= 0) System.exit(0);
 			}
 		});
 		moveTimer.start();
+		
+		
 	}
 
 
@@ -123,41 +126,16 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.zx += z.vx;
 				z.zy += z.vy;
 			}
-			int o = z.zx-mapX;
-			int p = z.zy-mapY;
-//			System.out.println(o + " " + p + "     " + panW/2 + " " + panH/2);
-//			
-//			if (z.zx-mapX >= panW/2-player.r)System.out.println("left");
-//			if (z.zx-mapX <= panW/2-player.r)System.out.println("right");
-//			if (z.zy-mapY >= panH/2-player.r)System.out.println("above");
-//			if (z.zy-mapY <= panH/2-player.r)System.out.println("below");
-			
-			if (z.zx+z.r >= panW/2-player.r && z.zx+z.r <= panW/2+player.r
-					|| z.zx-z.r <= panW/2-player.r && z.zx-z.r >= panW/2+player.r) {
-				if (z.zy+z.r >= panH/2-player.r && z.zy+z.r <= panH/2+player.r
-						|| z.zy-z.r <= panH/2-player.r && z.zy-z.r >= panH/2+player.r) {
-					player.decreaseHP(100, z);
+					
+			if (z.zx-mapX+z.r >= panW/2-player.r && z.zx-mapX+z.r <= panW/2+player.r
+					|| z.zx-mapX-z.r <= panW/2-player.r && z.zx-mapX-z.r >= panW/2+player.r) {
+				if (z.zy-mapY+z.r >= panH/2-player.r && z.zy-mapY+z.r <= panH/2+player.r
+						|| z.zy-mapY-z.r <= panH/2-player.r && z.zy-mapY-z.r >= panH/2+player.r) {
+					player.decreaseHP(10, z);
 					zombies.remove(z);
 					break;
 				}
-			}
-			
-			
-//			if (z.zx-mapX >= panW/2-player.r || z.zx-mapX <= panW/2-player.r
-//					&& z.zy-mapY >= panH/2-player.r || z.zy-mapY <= panH/2-player.r) System.out.println("in line");
-			
-//			if (panW/2+player.r >= z.zx-mapX || panW/2-player.r <= z.zx-mapX
-//					&& panH/2+player.r >= z.zy-mapY || panW/2+player.r <= z.zx-mapX) {
-//				System.out.println("hit");
-//				zombies.remove(z);
-//				player.decreaseHP(100, z);
-//				break;
-//			}
-//			if (z.zx-mapX == panW/2+player.r || z.zx-mapX == panW/2-player.r
-//					&& z.zy-mapY == panH/2+player.r || z.zy-mapY == panW/2-player.r) {
-//				
-//			}
-			
+			}		
 		}
 	}
 
@@ -193,7 +171,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.drawImage(backImg, 100, 100, 100, 100, drPanel);	//background image
 			g.setColor(Color.BLUE);
 			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
-			
+			g.setColor(Color.BLACK);
 			g.drawRect(10, 10, 500, 20);
 			g.setColor(Color.RED);
 			g.fillRect(10, 10, Player.HP/2, 20);
