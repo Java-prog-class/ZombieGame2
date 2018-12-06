@@ -22,12 +22,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	public static void main(String[] args) {
 		new ZombiesMain();
 	}
-	
+
 	static int panW = 800, panH = 500;
 	static int round = 1;
 	static int mapSpeedX = 0;
 	static int mapSpeedY = 0;
 	static int mapX = 0, mapY = 0;
+	final static int TZ_SPEED = 10;
 	
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
@@ -35,9 +36,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	private BufferedImage backImg = null;
 	Weapon[] weapons = new Weapon[3]; 
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
-	final static int TZ_SPEED = 10;
+	ArrayList<Building> buildings = new ArrayList<Building>();
 	
-	
+
+
 	ZombiesMain(){
 		setup();
 		spawnEnemies(round*10);
@@ -64,21 +66,21 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		weapons[0] = new Weapon(Weapon.PISTOL);
 		weapons[1] = new Weapon(Weapon.RIFLE);
 		weapons[2] = new Weapon(Weapon.SHOTGUN);
-		
+
 		player.currentWeapon = weapons[0];
-		
+
 		try
 		{
-		    backImg = ImageIO.read( new File("desert.jpg" ));
+			backImg = ImageIO.read( new File("desert.jpg" ));
 		}
 		catch ( IOException exc ){}
-		
+		gen();
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
-		
+
 		drPanel.repaint();
 	}
-	
+
 	void spawnEnemies(int n) {
 		for (int i = 0; i < n; i++) {
 			int rnd = (int) (Math.random()*3)+1;
@@ -90,24 +92,30 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 	
+	void gen() {
+		for(int i=0;i<5;i++) {
+			buildings.add(new Building(player));
+		}
+	}
+
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
-//			mapSpeedY = -10;
+			//			mapSpeedY = -10;
 			mapY -= player.vy;
 		}
 		if (direction.equals("down")) {
-//			mapSpeedY = 10;
+			//			mapSpeedY = 10;
 			mapY += player.vy;
 		}
 		if (direction.equals("right")) {
-//			mapSpeedX = 10;
+			//			mapSpeedX = 10;
 			mapX += player.vx;
 		}
 		if (direction.equals("left")) {
-//			mapSpeedX = -10;
+			//			mapSpeedX = -10;
 			mapX -= player.vx;
 		}
-//		System.out.println(mapX + " " + mapY);
+		//		System.out.println(mapX + " " + mapY);
 	}
 
 	void moveZombies() {
@@ -124,6 +132,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.zx += z.vx;
 				z.zy += z.vy;
 			}
+
 			
 			//Detect if zombie and player are in the same location
 			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
@@ -155,10 +164,11 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			//drPanel.requestFocus();
 			panH = this.getHeight();
 			panW = this.getWidth();
+			
 			if (!screenInit) {	//only do this the very first time that the screen is painted
 				player.x=panW/2;				
 				player.y=panH/2;
-				
+
 				for (Zombie z : zombies) {
 					z.zx = (int) (Math.random()*panW);
 					z.zy = (int) (Math.random()*panH);
@@ -166,9 +176,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				//System.out.println(panW + " " + panH);
 				if (panW > 10) screenInit = true;
 			}
+			
 			super.paintComponent(g); //clear screen and repaint using background color
 			Graphics2D g2 = (Graphics2D) g;		
-			
+
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 			g.setColor(Color.GREEN.darker());
@@ -185,13 +196,17 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (z.type.equals("heavy")) g.setColor(Color.RED.darker());
 				z.paint(g);
 			}
+			
+			for(Building bd : buildings) {
+				
+				bd.paint(g);
+			}
+
 		}
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		
-	}
+	public void keyTyped(KeyEvent e) {}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -199,7 +214,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			movePlayer("right");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {;
-			movePlayer("up");
+		movePlayer("up");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
 			movePlayer("left");
@@ -227,27 +242,17 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		
-	}
+	public void mouseClicked(MouseEvent e) {}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-		
-	}
+	public void mousePressed(MouseEvent e) {}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
-		
-	}
+	public void mouseReleased(MouseEvent e) {}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-	
-	}
+	public void mouseEntered(MouseEvent e) {}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-		
-	}
+	public void mouseExited(MouseEvent e) {}
 }
