@@ -8,7 +8,7 @@ class Zombie {
 	String type = "medium";	//light, medium, or heavy
 	int zx, zy;	//Position;
 	int vx, vy;	//Speed	
-	private int r = 15;	//Radius of drawing
+	int r = 15;	//Radius of drawing
 	
 	
 	Zombie(String type) {	
