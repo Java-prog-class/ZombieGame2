@@ -1,9 +1,6 @@
 package me.zombies;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,8 +8,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -33,7 +29,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	DrawingPanel drPanel;
 	Player player = new Player();	
 	private BufferedImage backImg = null;
-	Weapon[] weapons = new Weapon[3]; 
+	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	final static int TZ_SPEED = 10;
 	
@@ -41,11 +37,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	ZombiesMain(){
 		setup();
 		spawnEnemies(round*10);
+		
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				moveZombies();
 				drPanel.repaint();
+				if (Player.HP <= 0) System.exit(0);
 			}
 		});
 		moveTimer.start();
@@ -60,12 +58,14 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		drPanel = new DrawingPanel();
 		drPanel.addKeyListener(this);
 		window.add(drPanel);
-		weapons[0] = new Weapon(Weapon.PISTOL);
-		weapons[1] = new Weapon(Weapon.RIFLE);
-		weapons[2] = new Weapon(Weapon.SHOTGUN);
 		
-		player.currentWeapon = weapons[0];
-		
+		Weapon pistol = new Weapon(1);
+		weapons.add(pistol);
+		Weapon rifle = new Weapon(2);
+		weapons.add(rifle);
+		Weapon shotgun = new Weapon(3);
+		weapons.add(shotgun);
+				
 		try
 		{
 		    backImg = ImageIO.read( new File("desert.jpg" ));
@@ -123,11 +123,22 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.zx += z.vx;
 				z.zy += z.vy;
 			}
-			if (z.zx == panW/2 && z.zy == panH/2) {
-				zombies.remove(z);
-				player.decreaseHP(100, z);
-			}
 			
+			//Detect if zombie and player are in the same location
+			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
+					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
+				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
+						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
+					player.decreaseHP(100, z);
+					
+					//Move zombie away after hitting player
+					if (player.x+player.r > z.zx) z.zx -= 10;	//Approach from right
+					if (player.x+player.r < z.zx) z.zx += 10;	//Approach from left
+					if (player.y < z.zy) z.zy += 10;	//Approach from beneath
+					if (player.y > z.zy) z.zy -= 10;	//Approach from above
+					break;
+				}
+			}		
 		}
 	}
 
@@ -163,6 +174,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.drawImage(backImg, 100, 100, 100, 100, drPanel);	//background image
 			g.setColor(Color.BLUE);
 			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
+			g.setColor(Color.BLACK);
+			g.drawRect(10, 10, 500, 20);
+			g.setColor(Color.RED);
+			g.fillRect(10, 10, Player.HP/2, 20);
 			for (Zombie z : zombies) {
 				if (z.type.equals("light")) g.setColor(Color.RED.brighter());
 				if (z.type.equals("medium")) g.setColor(Color.RED);
@@ -192,26 +207,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			movePlayer("down");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
-			movePlayer("Swap");
-			int weaponnum = player.currentWeapon.type;
-			weaponnum++;
-<<<<<<<
-			if(weaponnum > weapons.length) {
-				weaponnum = 0;
-			}
-=======
-
->>>>>>>
-			player.currentWeapon = weapons[weaponnum];
-			System.out.println(player.currentWeapon.name);
-<<<<<<<
-			System.out.print(" " + weaponnum);
-=======
-			if(weaponnum >=2) {
-				weaponnum=0;
-			}
 			
->>>>>>>
 		}
 	}
 
@@ -220,29 +216,22 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		mapSpeedX = 0;
 		mapSpeedY = 0;
 	}
-
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
+		Weapon.shoot();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
 	}
-
 	@Override
 	public void mouseEntered(MouseEvent e) {
-	
 	}
-
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
 	}
 }
