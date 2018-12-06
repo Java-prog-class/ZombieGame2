@@ -46,9 +46,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			public void actionPerformed(ActionEvent e) {
 				moveZombies();
 				drPanel.repaint();
+				if (Player.HP <= 0) System.exit(0);
 			}
 		});
 		moveTimer.start();
+		
+		
 	}
 
 
@@ -123,11 +126,16 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.zx += z.vx;
 				z.zy += z.vy;
 			}
-			if (z.zx == panW/2 && z.zy == panH/2) {
-				zombies.remove(z);
-				player.decreaseHP(100, z);
-			}
-			
+					
+			if (z.zx-mapX+z.r >= panW/2-player.r && z.zx-mapX+z.r <= panW/2+player.r
+					|| z.zx-mapX-z.r <= panW/2-player.r && z.zx-mapX-z.r >= panW/2+player.r) {
+				if (z.zy-mapY+z.r >= panH/2-player.r && z.zy-mapY+z.r <= panH/2+player.r
+						|| z.zy-mapY-z.r <= panH/2-player.r && z.zy-mapY-z.r >= panH/2+player.r) {
+					player.decreaseHP(10, z);
+					zombies.remove(z);
+					break;
+				}
+			}		
 		}
 	}
 
@@ -163,6 +171,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.drawImage(backImg, 100, 100, 100, 100, drPanel);	//background image
 			g.setColor(Color.BLUE);
 			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
+			g.setColor(Color.BLACK);
+			g.drawRect(10, 10, 500, 20);
+			g.setColor(Color.RED);
+			g.fillRect(10, 10, Player.HP/2, 20);
 			for (Zombie z : zombies) {
 				if (z.type.equals("light")) g.setColor(Color.RED.brighter());
 				if (z.type.equals("medium")) g.setColor(Color.RED);
