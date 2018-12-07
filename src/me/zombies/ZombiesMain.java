@@ -141,6 +141,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.zx += z.vx;
 				z.zy += z.vy;
 			}
+
 			
 			//Detect if zombie and player are in the same location
 			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
