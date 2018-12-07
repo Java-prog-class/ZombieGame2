@@ -3,6 +3,7 @@ package me.zombies;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,9 +14,13 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class ZombiesMain implements MouseListener, KeyListener{
 
@@ -33,7 +38,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
 	Player player = new Player();	
-	private BufferedImage backImg = null;
+	BufferedImage backImg;
 	Weapon[] weapons = new Weapon[3]; 
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
@@ -69,12 +74,26 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 		player.currentWeapon = weapons[0];
 
+	
+//		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream("desert.jpg");
+//		try
+//		{
+//		    backImg = ImageIO.read(inputStr);
+//		}
+//		catch ( IOException exc ){
+//			
+//		}
+		backImg = loadImage("desert.jpg");
+		
+
+
 		try
 		{
 			backImg = ImageIO.read( new File("desert.jpg" ));
 		}
 		catch ( IOException exc ){}
 		gen();
+
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
 
@@ -95,7 +114,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	//Adding BUildings to an array
 	void gen() {
 		for(int i=0;i<5;i++) {
-			buildings.add(new Building(player, panW/2, panH/2));
+			buildings.add(new Building(player));
 		}
 	}
 
@@ -154,11 +173,27 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 	
+
+	BufferedImage loadImage(String fn) {
+		BufferedImage image = null;
+		
+		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream("desert.jpg");
+		try
+		{
+		    image = ImageIO.read(inputStr);
+		}
+		catch ( IOException exc ){
+			
+		}
+		
+		return image;
+
 	
 	void moveBuildings(){
 		for(Building e : buildings) {
 			
 		}
+
 	}
 
 	@SuppressWarnings("serial")
@@ -192,16 +227,23 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 			g.setColor(Color.GREEN.darker());
-			g.drawImage(backImg, 100, 100, 100, 100, drPanel);	//background image
-			g.setColor(Color.BLUE);
+			g.drawImage(backImg, 0, 0, panW, panH, drPanel);	//background image
+			
+			//drawPlayer
+			g.setColor(Color.BLUE);			
 			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
+
+			
+
 			for(Building bd : buildings) {	
 				bd.paint(g);
 			}
+
 			g.setColor(Color.BLACK);
-			g.drawRect(10, 10, 500, 20);
+			g.drawRect(10, 10, 500, 20);			
 			g.setColor(Color.RED);
 			g.fillRect(10, 10, Player.HP/2, 20);
+			
 			for (Zombie z : zombies) {
 				if (z.type.equals("light")) g.setColor(Color.RED.brighter());
 				if (z.type.equals("medium")) g.setColor(Color.RED);
