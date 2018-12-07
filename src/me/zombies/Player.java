@@ -1,8 +1,7 @@
 package me.zombies;
 
-import java.awt.Color;
-
-import javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.*;
 
  class Player{
 	int x,y,r;
