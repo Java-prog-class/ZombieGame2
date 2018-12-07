@@ -1,5 +1,6 @@
 package me.zombies;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 class Zombie {
@@ -13,15 +14,15 @@ class Zombie {
 	
 	Zombie(String type) {	
 		//Set various speeds
-		if (type == "light") {
+		if (type.equals("light")) {
 			vx = 0;
 			vy = 0;
 		}
-		if (type == "medium") {
+		if (type.equals("medium")) {
 			vx = 0;
 			vy = 0;
 		}
-		if (type == "heavy") {
+		if (type.equals("heavy")) {
 			vx = 0;
 			vy = 0;
 		}
@@ -29,18 +30,21 @@ class Zombie {
 	
 	void decreaseHealth(int n) {
 		
-		if (type == "light") {
+		if (type.equals("light")) {
 			health -= n/Math.random()*.25;
 		}
-		if (type == "medium") {
+		if (type.equals("medium")) {
 			health -= n/Math.random()*.50;
 		}
-		if (type == "heavy") {			
+		if (type.equals("heavy") ) {			
 			health -= n/Math.random()*.100;
 		}
 	}
 	
 	void paint(Graphics g) {
+		if (type.equals("light")) g.setColor(Color.BLACK);
+		if (type.equals("medium")) g.setColor(Color.RED);
+		if (type.equals("heavy")) g.setColor(Color.GREEN);
 		g.fillOval(zx-ZombiesMain.mapX, zy-ZombiesMain.mapY, r, r);
 	}
 	

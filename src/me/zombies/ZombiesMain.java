@@ -47,7 +47,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 	ZombiesMain(){
 		setup();
-		spawnEnemies(round*10);
+		spawnEnemies(50);
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -83,11 +83,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 //			
 //		}
 		backImg = loadImage("desert.jpg");
-		
-		}
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
-
 		drPanel.repaint();
 	}
 
@@ -102,7 +99,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 
-	//Adding BUildings to an array
+	//Adding Buildings to an array
 	void gen() {
 		for(int i=0;i<5;i++) {
 			buildings.add(new Building(player, panW/2, panH/2));
@@ -126,7 +123,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			//			mapSpeedX = -10;
 			mapX -= player.vx;
 		}
-		//		System.out.println(mapX + " " + mapY);
 	}
 
 	void moveZombies() {
@@ -143,7 +139,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.zx += z.vx;
 				z.zy += z.vy;
 			}
-
 
 			//Detect if zombie and player are in the same location
 			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
@@ -178,6 +173,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 		
 		return image;
+	}
 
 	
 	void moveBuildings(){
@@ -205,8 +201,14 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				player.y=panH/2;
 
 				for (Zombie z : zombies) {
-					z.zx = (int) (Math.random()*panW);
-					z.zy = (int) (Math.random()*panH);
+					int testX = (int) (Math.random()*panW);
+					int testY = (int) (Math.random()*panH);
+					if (testX >= panW/2+10 || testX <= panW/2-10
+							&& testY >= panH/2+10 || testY <= panH/2-10) {
+							z.zx = testX;
+							z.zy = testY;
+					}
+					else return;
 				}
 				//System.out.println(panW + " " + panH);
 				if (panW > 10) screenInit = true;
@@ -224,21 +226,17 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.setColor(Color.BLUE);			
 			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
 
-			
-
 			for(Building bd : buildings) {	
 				bd.paint(g);
 			}
-
+			//Health Bar
 			g.setColor(Color.BLACK);
 			g.drawRect(10, 10, 500, 20);			
 			g.setColor(Color.RED);
 			g.fillRect(10, 10, Player.HP/2, 20);
 			
 			for (Zombie z : zombies) {
-				if (z.type.equals("light")) g.setColor(Color.RED.brighter());
-				if (z.type.equals("medium")) g.setColor(Color.RED);
-				if (z.type.equals("heavy")) g.setColor(Color.RED.darker());
+				
 				z.paint(g);
 			}
 
