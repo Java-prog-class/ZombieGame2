@@ -7,9 +7,13 @@ import java.awt.Rectangle;
 class Building extends Rectangle{
 
 	Player player;
+	int	PANWIDTH;
+	int PANHEIGHT;
 	
-	Building(Player p){
+	Building(Player p, int WIDTH,int HEIGHT){
 		player = p;
+		PANWIDTH = WIDTH;
+		PANHEIGHT = HEIGHT;
 		createBuilding();
 	}
 	
@@ -33,6 +37,19 @@ class Building extends Rectangle{
 			width = (int)(Math.random()*150);
 			check();
 		}else if(height == player.y+player.r){
+			height = (int)(Math.random()*150);
+		}
+		
+		if(x + y == PANWIDTH) {
+			x = (int)(Math.random()*1500);
+			check();
+		}else if(x + y == PANHEIGHT) {
+			y = (int)(Math.random()*1500);
+			check();
+		}else if(width + height == PANHEIGHT) {
+			width = (int)(Math.random()*150);
+			check();
+		}else if(width + height == PANWIDTH){
 			height = (int)(Math.random()*150);
 		}
 	}
