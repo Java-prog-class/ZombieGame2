@@ -34,7 +34,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	static int mapSpeedY = 0;
 	static int mapX = 0, mapY = 0;
 	final static int TZ_SPEED = 10;
-	
+
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
 	Player player = new Player();	
@@ -42,7 +42,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	Weapon[] weapons = new Weapon[3]; 
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
-	
+
 
 
 	ZombiesMain(){
@@ -84,6 +84,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 //		}
 		backImg = loadImage("desert.jpg");
 		
+		}
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
 
@@ -100,10 +101,11 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			zombies.add(z);
 		}
 	}
-	
+
+	//Adding BUildings to an array
 	void gen() {
 		for(int i=0;i<5;i++) {
-			buildings.add(new Building(player));
+			buildings.add(new Building(player, panW/2, panH/2));
 		}
 	}
 
@@ -142,14 +144,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.zy += z.vy;
 			}
 
-			
+
 			//Detect if zombie and player are in the same location
 			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
 					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
+
 				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
 						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
 					player.decreaseHP(100, z);
-					
+
 					//Move zombie away after hitting player
 					if (player.x+player.r > z.zx) z.zx -= 10;	//Approach from right
 					if (player.x+player.r < z.zx) z.zx += 10;	//Approach from left
@@ -161,6 +164,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 	
+
 	BufferedImage loadImage(String fn) {
 		BufferedImage image = null;
 		
@@ -174,6 +178,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 		
 		return image;
+
+	
+	void moveBuildings(){
+		for(Building e : buildings) {
+			
+		}
+
 	}
 
 	@SuppressWarnings("serial")
@@ -188,7 +199,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			//drPanel.requestFocus();
 			panH = this.getHeight();
 			panW = this.getWidth();
-			
+
 			if (!screenInit) {	//only do this the very first time that the screen is painted
 				player.x=panW/2;				
 				player.y=panH/2;
@@ -200,7 +211,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				//System.out.println(panW + " " + panH);
 				if (panW > 10) screenInit = true;
 			}
-			
+
 			super.paintComponent(g); //clear screen and repaint using background color
 			Graphics2D g2 = (Graphics2D) g;		
 
@@ -212,7 +223,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			//drawPlayer
 			g.setColor(Color.BLUE);			
 			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
+
 			
+
+			for(Building bd : buildings) {	
+				bd.paint(g);
+			}
+
 			g.setColor(Color.BLACK);
 			g.drawRect(10, 10, 500, 20);			
 			g.setColor(Color.RED);
@@ -224,11 +241,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (z.type.equals("heavy")) g.setColor(Color.RED.darker());
 				z.paint(g);
 			}
-			
-			for(Building bd : buildings) {
-				
-				bd.paint(g);
-			}
+
 
 		}
 	}
