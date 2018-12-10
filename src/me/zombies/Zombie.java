@@ -1,9 +1,10 @@
 package me.zombies;
 
-import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
-class Zombie {
+@SuppressWarnings("serial")
+class Zombie extends Rectangle {
 	//Static Variables
 	private  int health = 500;
 	String type = "medium";	//light, medium, or heavy
@@ -11,20 +12,19 @@ class Zombie {
 	int vx, vy;	//Speed	
 	int r = 15;	//Radius of drawing
 	
+	//vx = zombie position - player position - (screen width-zombie position)
+	//vy = zombie position - player position - (screen height-zombie position)
 	
-	Zombie(String type) {	
+	public Zombie(String type) {	 
 		//Set various speeds
 		if (type.equals("light")) {
-			vx = 0;
-			vy = 0;
+			this.type = "light";
 		}
 		if (type.equals("medium")) {
-			vx = 0;
-			vy = 0;
+			this.type = "medium";
 		}
 		if (type.equals("heavy")) {
-			vx = 0;
-			vy = 0;
+			this.type = "heavy";;
 		}
 	}
 	
@@ -42,9 +42,6 @@ class Zombie {
 	}
 	
 	void paint(Graphics g) {
-		if (type.equals("light")) g.setColor(Color.BLACK);
-		if (type.equals("medium")) g.setColor(Color.RED);
-		if (type.equals("heavy")) g.setColor(Color.GREEN);
 		g.fillOval(zx-ZombiesMain.mapX, zy-ZombiesMain.mapY, r, r);
 	}
 	

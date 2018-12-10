@@ -44,10 +44,9 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	ArrayList<Building> buildings = new ArrayList<Building>();
 
 
-
 	ZombiesMain(){
 		setup();
-		spawnEnemies(50);
+		spawnEnemies(round*10);
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -82,6 +81,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 //		catch ( IOException exc ){
 //			
 //		}
+		gen();
 		backImg = loadImage("desert.jpg");
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
@@ -101,52 +101,55 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 	//Adding Buildings to an array
 	void gen() {
-		for(int i=0;i<5;i++) {
+		for(int i=0;i<10;i++) {
 			buildings.add(new Building(player, panW/2, panH/2));
 		}
 	}
 
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
-			//			mapSpeedY = -10;
 			mapY -= player.vy;
 		}
 		if (direction.equals("down")) {
-			//			mapSpeedY = 10;
 			mapY += player.vy;
 		}
 		if (direction.equals("right")) {
-			//			mapSpeedX = 10;
 			mapX += player.vx;
 		}
 		if (direction.equals("left")) {
-			//			mapSpeedX = -10;
 			mapX -= player.vx;
 		}
 	}
 
 	void moveZombies() {
 		for (Zombie z: zombies) {
+			
+			if (z.zx-mapX < player.x) z.vx = 1;
+			if (z.zx-mapX > player.x) z.vx = -1;
+			if (z.zy-mapY < player.y) z.vy = 1;
+			if (z.zy-mapY > player.y) z.vy = -1;			
+			
 			if (z.type == "light") {
-				z.zx += z.vx;
-				z.zy += z.vy;
+				z.zx += z.vx*3;
+				z.zy += z.vy*3;
 			}
 			if (z.type == "medium") {
-				z.zx += z.vx;
-				z.zy += z.vy;
+				z.zx += z.vx*2;
+				z.zy += z.vy*2;
 			}
 			if (z.type == "heavy") {
 				z.zx += z.vx;
 				z.zy += z.vy;
 			}
-
+			
+			
 			//Detect if zombie and player are in the same location
 			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
 					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
 
 				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
 						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
-					player.decreaseHP(100, z);
+//					player.decreaseHP(100, z);
 
 					//Move zombie away after hitting player
 					if (player.x+player.r > z.zx) z.zx -= 10;	//Approach from right
@@ -175,14 +178,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		return image;
 	}
 
-	
-	void moveBuildings(){
-		for(Building e : buildings) {
-			
-		}
-
-	}
-
 	@SuppressWarnings("serial")
 	private class DrawingPanel extends JPanel {
 		boolean screenInit = false;
@@ -203,12 +198,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				for (Zombie z : zombies) {
 					int testX = (int) (Math.random()*panW);
 					int testY = (int) (Math.random()*panH);
-					if (testX >= panW/2+10 || testX <= panW/2-10
-							&& testY >= panH/2+10 || testY <= panH/2-10) {
-							z.zx = testX;
-							z.zy = testY;
+					if (z.intersects(player)) {
+						return;	
 					}
-					else return;
+					else {
+						z.zx = testX;
+						z.zy = testY;
+					}
 				}
 				//System.out.println(panW + " " + panH);
 				if (panW > 10) screenInit = true;
@@ -235,8 +231,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.setColor(Color.RED);
 			g.fillRect(10, 10, Player.HP/2, 20);
 			
-			for (Zombie z : zombies) {
-				
+			for (Zombie z : zombies) {	
+				if (z.type.equals("light")) g.setColor(Color.RED.brighter());
+				if (z.type.equals("medium")) g.setColor(Color.RED.darker());
+				if (z.type.equals("heavy")) g.setColor(Color.RED.darker().darker());
 				z.paint(g);
 			}
 
