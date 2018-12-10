@@ -2,41 +2,32 @@ package me.zombies;
 
 class Weapon {
 	String name;
-	int type;
 	int maxAmmo;
 	private int damage;
 	private static int ammo;
-	static final int PISTOL = 1;
-	static final int RIFLE = 2;
-	static final int SHOTGUN = 3;
 
-	Weapon(int type){
-		this.type = type; // store the weapon number
-
-		switch(type) {
-		case PISTOL:
+	Weapon(int weaponNumber){
+		if (weaponNumber == 1){
+			name = "Pistol";
 			damage = 100;
 			maxAmmo = 30;
 			ammo = 30;
-			name = "pistol";
-			break;
-		case RIFLE:
+		}
+		else if (weaponNumber == 2){
+			name = "Rifle";
 			damage = 150;
 			maxAmmo = 15;
 			ammo = 15;
-			name = "rifle";
-			break;
-		case SHOTGUN:
-			damage = 200;
+		}
+		else if (weaponNumber == 3){
+			name = "Shotgun";
+			damage = 100;
 			maxAmmo = 5;
 			ammo = 5;
-			name = "shotgun";
-			break;
 		}
 	}
 
 	static void shoot() {
-		
 		ammo--;
 	}
 	void reload(int numBullets) {
