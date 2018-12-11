@@ -1,5 +1,5 @@
 package me.zombies;
-
+ 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -43,11 +43,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	DrawingPanel drPanel;
 	Player player = new Player();
 	JLabel weapon = new JLabel();
+	JLabel ammo = new JLabel();
 	String name = "";
 
 	private BufferedImage backImg = null;
+	
 	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
-
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
 
@@ -73,13 +74,17 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		window.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		drPanel = new DrawingPanel();
 		drPanel.addKeyListener(this);
+		drPanel.addMouseListener(this);
 		window.add(drPanel);
 		
 		weapons.add(new Weapon(1));
 		weapons.add(new Weapon(2));
-		weapons.add(new Weapon(3));
-		
+		weapons.add(new Weapon(3));	
+		weapon.setText(weapons.get(0).name);	
 		drPanel.add(weapon);
+		
+		ammo = new JLabel("AMMO: "+ Weapon.ammoN);
+		drPanel.add(ammo);
 
 		try
 		{
@@ -90,7 +95,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
-
 		drPanel.repaint();
 	}
 
@@ -181,7 +185,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 		return image;
 	}
-
+	
 	void moveBuildings(){
 		for(Building e : buildings) {
 
@@ -278,14 +282,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(SwingUtilities.isRightMouseButton(e)){
-			if (weaponNumber < 2) {
-				weaponNumber ++;
-				weapon.setText(weapons.get(weaponNumber).name);
-				System.out.println(weaponNumber);
-			}
-			else {
-				weaponNumber = 0;
-			}
+			weaponNumber++;
+			if (weaponNumber>2) weaponNumber=0;
+			weapon.setText(weapons.get(weaponNumber).name);
+			ammo = new JLabel(Weapon.ammoN);
 		}
 		else Weapon.shoot();
 	}
