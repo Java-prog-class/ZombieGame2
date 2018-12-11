@@ -4,38 +4,46 @@ class Weapon {
 	String name;
 	int maxAmmo;
 	private int damage;
-	private static int ammo;
+	private int ammo;
+	
+	Bullet bullets = new Bullet();
 
 	Weapon(int weaponNumber){
-		if (weaponNumber == 1){
+		if (weaponNumber == 0){
 			name = "Pistol";
 			damage = 100;
-			maxAmmo = 30;
-			ammo = 30;
+			maxAmmo = 10;
+			ammo = 10;
 		}
-		else if (weaponNumber == 2){
+		else if (weaponNumber == 1){
 			name = "Rifle";
 			damage = 150;
-			maxAmmo = 15;
-			ammo = 15;
-		}
-		else if (weaponNumber == 3){
-			name = "Shotgun";
-			damage = 100;
 			maxAmmo = 5;
 			ammo = 5;
 		}
+		else if (weaponNumber == 2){
+			name = "Shotgun";
+			damage = 100;
+			maxAmmo = 2;
+			ammo = 2;
+		}
 	}
 
-	static void shoot() {
+	void shoot() {
 		ammo--;
+		if (ammo < 0) ammo = 0;
+		else bullets.shoot();
+		
 	}
-	void reload(int numBullets) {
-		ammo += numBullets;
-		if (ammo > maxAmmo) ammo = maxAmmo;
+	void reload() {
+		ammo = maxAmmo;
 	}
 
 	int getDamage() {
 		return damage;
 	}
+	int getAmmo() {
+		return ammo;
+	}
+	
 }

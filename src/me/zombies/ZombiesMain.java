@@ -1,5 +1,5 @@
 package me.zombies;
-
+ 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,21 +35,23 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	static int round = 1;
 	static int mapSpeedX = 0;
 	static int mapSpeedY = 0;
-	static int weaponNumber = 0;
 	static int mapX = 0, mapY = 0;
 	final static int TZ_SPEED = 10;
+	
 
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
 	Player player = new Player();
-	JLabel weapon = new JLabel();
+	JLabel lblWeapon = new JLabel();
+	JLabel lblAmmo = new JLabel();
 	String name = "";
 
 	private BufferedImage backImg = null;
+	
 	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
-
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
+	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 
 	ZombiesMain(){
 		setup();
@@ -73,13 +75,17 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		window.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		drPanel = new DrawingPanel();
 		drPanel.addKeyListener(this);
+		drPanel.addMouseListener(this);
 		window.add(drPanel);
 		
+		weapons.add(new Weapon(0));
 		weapons.add(new Weapon(1));
-		weapons.add(new Weapon(2));
-		weapons.add(new Weapon(3));
+		weapons.add(new Weapon(2));	
+		lblWeapon.setText(weapons.get(0).name);	
+		drPanel.add(lblWeapon);
 		
-		drPanel.add(weapon);
+		lblAmmo = new JLabel("AMMO: "+ weapons.get(0).getAmmo());
+		drPanel.add(lblAmmo);
 
 		try
 		{
@@ -90,7 +96,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
-
 		drPanel.repaint();
 	}
 
@@ -181,7 +186,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 		return image;
 	}
-
+	
 	void moveBuildings(){
 		for(Building e : buildings) {
 
@@ -226,8 +231,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.setColor(Color.BLUE);			
 			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
 
-
-
 			for(Building bd : buildings) {	
 				bd.paint(g);
 			}
@@ -263,7 +266,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			movePlayer("down");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
-
+			weapons.get(player.currentWeapon).reload();
+			lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());	
 		}
 	}
 	@Override
@@ -278,16 +282,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(SwingUtilities.isRightMouseButton(e)){
-			if (weaponNumber < 2) {
-				weaponNumber ++;
-				weapon.setText(weapons.get(weaponNumber).name);
-				System.out.println(weaponNumber);
-			}
-			else {
-				weaponNumber = 0;
-			}
+			player.currentWeapon++;
+			if (player.currentWeapon>2) player.currentWeapon=0;
+			lblWeapon.setText(weapons.get(player.currentWeapon).name);
 		}
-		else Weapon.shoot();
+		else {
+			int w = player.currentWeapon;
+			weapons.get(w).shoot();
+		}
+		lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());		
 	}
 
 	@Override

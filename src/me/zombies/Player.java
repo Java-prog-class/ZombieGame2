@@ -4,7 +4,8 @@ package me.zombies;
 	int x,y,r;
 	int vx = 10, vy = 10;
 	static int HP = 1000;
-
+	int currentWeapon = 0;
+	
 	Player(){
 		x=ZombiesMain.panW/2;
 		y=ZombiesMain.panH/2;
