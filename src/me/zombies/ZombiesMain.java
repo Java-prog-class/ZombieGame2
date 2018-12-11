@@ -86,7 +86,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			backImg = ImageIO.read( new File("desert.jpg" ));
 		}
 		catch ( IOException exc ){}
-		gen();
+		genBuildings();
 
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
@@ -106,12 +106,28 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	}
 
 	//Adding BUildings to an array
-	void gen() {
-		for(int i=0;i<5;i++) {
-			buildings.add(new Building(player));
-		}
+	void genBuildings() {
+		for(int i=0;i<55;i++) {
+			buildings.add(new Building(player));			
+		}		
 	}
 
+	void resetBuildingLocation() {
+		//DAMN!!!! This sort of for loop NEVER lets you change the object's values.
+		//for (Building bd: buildings) {
+		for (int i=0; i<buildings.size(); i++) {
+			Building bd = buildings.get(i);
+			//System.out.println(bd.toString());
+			
+			if(bd.intersects(player)){
+				//System.out.print("*** ");
+				bd.x = bd.x + bd.width + 50;
+				//bd.colour = Color.YELLOW;
+				//System.out.println(bd.toString());
+			}
+		}
+
+	}
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
 			//			mapSpeedY = -10;
@@ -149,47 +165,34 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 
 			//Detect if zombie and player are in the same location
-			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
-					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
-
-				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
-						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
-					player.decreaseHP(100, z);
+//			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
+//					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
+//
+//				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
+//						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
+//					player.decreaseHP(100, z);
 
 					//Move zombie away after hitting player
-					if (player.x+player.r > z.zx) z.zx -= 10;	//Approach from right
-					if (player.x+player.r < z.zx) z.zx += 10;	//Approach from left
+					if (player.x+player.width > z.zx) z.zx -= 10;	//Approach from right
+					if (player.x+player.width < z.zx) z.zx += 10;	//Approach from left
 					if (player.y < z.zy) z.zy += 10;	//Approach from beneath
 					if (player.y > z.zy) z.zy -= 10;	//Approach from above
 					break;
 				}
-			}		
-		}
+//			}		
+//		}
 	}
 	
-
 	BufferedImage loadImage(String fn) {
-		BufferedImage image = null;
-		
+		BufferedImage image = null;		
 		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream("desert.jpg");
-		try
-		{
+		try {
 		    image = ImageIO.read(inputStr);
-		}
-		catch ( IOException exc ){
-			
-		}
+		} catch ( IOException exc ){}
 		
 		return image;
-
-	
-	void moveBuildings(){
-		for(Building e : buildings) {
-			
-		}
-
 	}
-
+	
 	@SuppressWarnings("serial")
 	private class DrawingPanel extends JPanel {
 		boolean screenInit = false;
@@ -200,13 +203,14 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		@Override
 		public void paintComponent(Graphics g) {
 			//drPanel.requestFocus();
-			panH = this.getHeight();
 			panW = this.getWidth();
+			panH = this.getHeight();			
 
 			if (!screenInit) {	//only do this the very first time that the screen is painted
 				player.x=panW/2;				
 				player.y=panH/2;
-
+				resetBuildingLocation();
+				
 				for (Zombie z : zombies) {
 					z.zx = (int) (Math.random()*panW);
 					z.zy = (int) (Math.random()*panH);
@@ -223,15 +227,16 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.setColor(Color.GREEN.darker());
 			g.drawImage(backImg, 0, 0, panW, panH, drPanel);	//background image
 			
+			for(Building bd : buildings) {	
+				bd.paint(g);				
+			}
 			//drawPlayer
 			g.setColor(Color.BLUE);			
-			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
+			g.fillOval(player.x-player.width/2, player.y-player.height/2, player.width, player.height);
 
 			
 
-			for(Building bd : buildings) {	
-				bd.paint(g);
-			}
+		
 
 			g.setColor(Color.BLACK);
 			g.drawRect(10, 10, 500, 20);			

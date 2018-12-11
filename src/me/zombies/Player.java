@@ -3,8 +3,8 @@ package me.zombies;
 import java.awt.*;
 import javax.swing.*;
 
- class Player{
-	int x,y,r;
+ class Player extends Rectangle{
+	
 	int vx = 10, vy = 10;
 	static int HP = 1000;
 	Weapon currentWeapon = null;
@@ -12,7 +12,7 @@ import javax.swing.*;
 	Player(){
 		x=ZombiesMain.panW/2;
 		y=ZombiesMain.panH/2;
-		r=20;
+		width=height=20;		
 	}
 	
 	void decreaseHP(int n, Zombie z){
