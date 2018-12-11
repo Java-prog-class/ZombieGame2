@@ -5,27 +5,18 @@ import java.awt.Rectangle;
 
 @SuppressWarnings("serial")
 class Zombie extends Rectangle {
-	//Static Variables
+	//Variables
 	private  int health = 500;
 	String type = "medium";	//light, medium, or heavy
 	int zx, zy;	//Position;
 	int vx, vy;	//Speed	
 	int r = 15;	//Radius of drawing
-	
-	//vx = zombie position - player position - (screen width-zombie position)
-	//vy = zombie position - player position - (screen height-zombie position)
-	
+		
 	public Zombie(String type) {	 
-		//Set various speeds
-		if (type.equals("light")) {
-			this.type = "light";
-		}
-		if (type.equals("medium")) {
-			this.type = "medium";
-		}
-		if (type.equals("heavy")) {
-			this.type = "heavy";;
-		}
+		//Set various types
+		if (type.equals("light")) this.type = "light";
+		if (type.equals("medium")) this.type = "medium";
+		if (type.equals("heavy")) this.type = "heavy";;
 	}
 	
 	void decreaseHealth(int n) {

@@ -34,6 +34,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	static int mapSpeedY = 0;
 	static int mapX = 0, mapY = 0;
 	final static int TZ_SPEED = 10;
+	final static int POWERUP_SPEED = 100;
+	boolean invincible = false;
 
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
@@ -42,11 +44,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	Weapon[] weapons = new Weapon[3]; 
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
-
+	ArrayList<Powerup> powerups = new ArrayList<Powerup>();
 
 	ZombiesMain(){
 		setup();
 		spawnEnemies(round*10);
+		spawnPowerups(5);
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -56,6 +59,16 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 		});
 		moveTimer.start();
+		
+		
+		Timer powerTimer = new Timer(POWERUP_SPEED, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				usePowerups();
+				drPanel.repaint();
+			}
+		});
+		powerTimer.start();
 	}
 
 
@@ -70,17 +83,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		weapons[0] = new Weapon(Weapon.PISTOL);
 		weapons[1] = new Weapon(Weapon.RIFLE);
 		weapons[2] = new Weapon(Weapon.SHOTGUN);
-
 		player.currentWeapon = weapons[0];
-	
-//		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream("desert.jpg");
-//		try
-//		{
-//		    backImg = ImageIO.read(inputStr);
-//		}
-//		catch ( IOException exc ){
-//			
-//		}
+
 		gen();
 		backImg = loadImage("desert.jpg");
 		window.setVisible(true);
@@ -96,6 +100,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			if (rnd == 2) z = new Zombie("medium"); 
 			if (rnd == 3) z = new Zombie("heavy"); 
 			zombies.add(z);
+		}
+	}
+	
+	void spawnPowerups(int n) {
+		for (int i = 0; i < n; i++) {
+			Powerup p = new Powerup(i);
+			powerups.add(p);
 		}
 	}
 
@@ -142,27 +153,51 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.zy += z.vy;
 			}
 			
-			
 			//Detect if zombie and player are in the same location
 			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
 					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
 
 				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
 						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
-//					player.decreaseHP(100, z);
+					//if (!invincible) player.decreaseHP(100, z);
 
 					//Move zombie away after hitting player
-					if (player.x+player.r > z.zx) z.zx -= 10;	//Approach from right
-					if (player.x+player.r < z.zx) z.zx += 10;	//Approach from left
-					if (player.y < z.zy) z.zy += 10;	//Approach from beneath
-					if (player.y > z.zy) z.zy -= 10;	//Approach from above
+					if (player.x+player.r > z.zx) z.zx -= 30;	//Approach from right
+					if (player.x-player.r < z.zx) z.zx += 30;	//Approach from left
+					if (player.y-player.r < z.zy) z.zy += 30;	//Approach from beneath
+					if (player.y+player.r > z.zy) z.zy -= 30;	//Approach from above
 					break;
 				}
 			}		
 		}
 	}
 	
-
+	void usePowerups() {
+		for (Powerup p : powerups) {
+			if (p.intersects(player)) {
+				if (p.type.equals("IncreaseHealth")) {
+					player.HP += 200;
+					if (player.HP > Player.HP) player.HP = Player.HP;
+				}
+				if (p.type.equals("Invincible")) {
+					invincible = true;
+				}
+				if (p.type.equals("IncreaseDamage")) {
+					
+				}
+				if (p.type.equals("IncreaseSpeed")) {
+					player.vx += 5;
+					player.vy += 5;
+				}
+				if (p.type.equals("RestoreHealth")) {
+					player.HP = Player.HP;
+				}
+				powerups.remove(p);
+			}
+		}
+	}
+	
+	
 	BufferedImage loadImage(String fn) {
 		BufferedImage image = null;
 		
@@ -206,6 +241,17 @@ public class ZombiesMain implements MouseListener, KeyListener{
 						z.zy = testY;
 					}
 				}
+				for (Powerup p : powerups) {
+					int testX = (int) (Math.random()*panW);
+					int testY = (int) (Math.random()*panH);
+					if (p.intersects(player)) {
+						return;	
+					}
+					else {
+						p.px = testX;
+						p.py = testY;
+					}
+				}
 				//System.out.println(panW + " " + panH);
 				if (panW > 10) screenInit = true;
 			}
@@ -237,8 +283,11 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (z.type.equals("heavy")) g.setColor(Color.RED.darker().darker());
 				z.paint(g);
 			}
-
-
+			for (Powerup p : powerups) {	
+				g.setColor(Color.YELLOW);
+				//if (p.type.equals("IncreaseHealth")) g.setColor(Color.PINK);
+				p.paint(g);
+			}
 		}
 	}
 
@@ -273,10 +322,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		mapSpeedX = 0;
-		mapSpeedY = 0;
-	}
+	public void keyReleased(KeyEvent e) {}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {}
