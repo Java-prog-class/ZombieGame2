@@ -1,5 +1,6 @@
 package me.zombies;
 
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,8 +40,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
 	Player player = new Player();	
-	BufferedImage backImg;
-	Weapon[] weapons = new Weapon[3]; 
+
+	private BufferedImage backImg = null;
+	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
 
@@ -48,6 +52,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	ZombiesMain(){
 		setup();
 		spawnEnemies(round*10);
+		
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -68,24 +73,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		drPanel = new DrawingPanel();
 		drPanel.addKeyListener(this);
 		window.add(drPanel);
-		weapons[0] = new Weapon(Weapon.PISTOL);
-		weapons[1] = new Weapon(Weapon.RIFLE);
-		weapons[2] = new Weapon(Weapon.SHOTGUN);
-
-		player.currentWeapon = weapons[0];
-
-	
-//		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream("desert.jpg");
-//		try
-//		{
-//		    backImg = ImageIO.read(inputStr);
-//		}
-//		catch ( IOException exc ){
-//			
-//		}
-		backImg = loadImage("desert.jpg");
 		
-
+		Weapon pistol = new Weapon(1);
+		weapons.add(pistol);
+		Weapon rifle = new Weapon(2);
+		weapons.add(rifle);
+		Weapon shotgun = new Weapon(3);
+		weapons.add(shotgun);
 
 		try
 		{
@@ -273,15 +267,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			movePlayer("down");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
-			movePlayer("Swap");
-			int weaponnum = player.currentWeapon.type;
-			weaponnum++;
-			if(weaponnum > weapons.length) {
-				weaponnum = 0;
-			}
-			player.currentWeapon = weapons[weaponnum];
-			System.out.println(player.currentWeapon.name);
-			System.out.print(" " + weaponnum);
+			
 		}
 	}
 
@@ -290,19 +276,24 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		mapSpeedX = 0;
 		mapSpeedY = 0;
 	}
+	@Override
+
+	public void mouseClicked(MouseEvent e) {
+	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {
+		Weapon.shoot();
+	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {}
-
+	public void mouseReleased(MouseEvent e) {
+	}
 	@Override
-	public void mouseReleased(MouseEvent e) {}
-
+	public void mouseEntered(MouseEvent e) {
+	}
 	@Override
-	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {
+	}
 
-	@Override
-	public void mouseExited(MouseEvent e) {}
 }
