@@ -90,7 +90,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		Weapon shotgun = new Weapon(3);
 		weapons.add(shotgun);
 
-
 		backImg = loadImage("desert.jpg");
 		genBuildings();
 
@@ -119,13 +118,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 	//Adding Buildings to an array
 	void genBuildings() {
-		for(int i=0;i<55;i++) {
-			buildings.add(new Building(player));			
+		for(int i=0;i<75;i++) {
+			buildings.add(new Building(player,panW,panH));			
 		}		
 	}
 
 	void resetBuildingLocation() {
-		//DAMN!!!! This sort of for loop NEVER lets you change the object's values.
 		//for (Building bd: buildings) {
 		for (int i=0; i<buildings.size(); i++) {
 			Building bd = buildings.get(i);
@@ -142,17 +140,42 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	}
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
-			mapY -= player.vy;
-		}
-		if (direction.equals("down")) {
+			player.y -= player.vy;
 			mapY += player.vy;
 		}
-		if (direction.equals("right")) {
-			mapX += player.vx;
+		if (direction.equals("down")) {
+			player.y += player.vy;
+			mapY -= player.vy;
 		}
-		if (direction.equals("left")) {
+		if (direction.equals("right")) {
+			player.x += player.vx;
 			mapX -= player.vx;
 		}
+		if (direction.equals("left")) {
+			player.x -= player.vx;
+			mapX += player.vx;
+		}
+				
+		for(Building bd : buildings) {			
+			if(bd.intersects(player)) {
+				System.out.println("i hit him");
+				if(direction.equals("right")) {
+					mapX += player.vx;
+					player.x -= player.vx;
+				}else if(direction.equals("left")) {
+					mapX -= player.vx;
+					player.x += player.vx;
+				}else if(direction.equals("up")) {
+					mapY -= player.vy;
+					player.y += player.vy;
+				}else if(direction.equals("down")) {
+					mapY += player.vy;
+					player.y -= player.vy;
+				}
+			}
+		}	
+	
+		//		System.out.println(mapX + " " + mapY);
 	}
 
 	void moveZombies() {
@@ -296,7 +319,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 			//drawPlayer
 			g.setColor(Color.BLUE);			
-			g.fillOval(player.x-player.width/2, player.y-player.height/2, player.width, player.height);
+			g.fillOval(player.x +mapX, player.y+mapY, player.width, player.height);
 
 			g.setColor(Color.BLACK);
 			g.drawRect(10, 10, 500, 20);			
