@@ -1,47 +1,44 @@
 package me.zombies;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
-class Zombie {
-	//Static Variables
+@SuppressWarnings("serial")
+class Zombie extends Rectangle {
+	//Variables
 	private  int health = 500;
 	String type = "medium";	//light, medium, or heavy
 	int zx, zy;	//Position;
 	int vx, vy;	//Speed	
-	int r = 15;	//Radius of drawing
-	
-	
-	Zombie(String type) {	
-		//Set various speeds
-		if (type == "light") {
-			vx = 0;
-			vy = 0;
-		}
-		if (type == "medium") {
-			vx = 0;
-			vy = 0;
-		}
-		if (type == "heavy") {
-			vx = 0;
-			vy = 0;
-		}
+	int width = height = 15;
+	//int r = 15;	//Radius of drawing
+		
+	public Zombie(String type) {	 
+		//Set various types
+		if (type.equals("light")) this.type = "light";
+		if (type.equals("medium")) this.type = "medium";
+		if (type.equals("heavy")) this.type = "heavy";;
 	}
 	
 	void decreaseHealth(int n) {
 		
-		if (type == "light") {
+		if (type.equals("light")) {
 			health -= n/Math.random()*.25;
 		}
-		if (type == "medium") {
+		if (type.equals("medium")) {
 			health -= n/Math.random()*.50;
 		}
-		if (type == "heavy") {			
+		if (type.equals("heavy") ) {			
 			health -= n/Math.random()*.100;
 		}
 	}
 	
 	void paint(Graphics g) {
+<<<<<<< HEAD
 		g.fillOval(zx+ZombiesMain.mapX, zy+ZombiesMain.mapY, r, r);
+=======
+		g.fillOval(zx-ZombiesMain.mapX, zy-ZombiesMain.mapY, width, height);
+>>>>>>> Jacob
 	}
 	
 	int getHealth() {
