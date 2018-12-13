@@ -41,7 +41,7 @@ class Zombie {
 	}
 	
 	void paint(Graphics g) {
-		g.fillOval(zx+ZombiesMain.mapX, zy+ZombiesMain.mapY, r, r);
+		g.fillOval(zx+ZombiesMain.mapX, zy+ZombiesMain.mapY, width, height);
 	}
 	
 	int getHealth() {

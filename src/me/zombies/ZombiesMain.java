@@ -81,12 +81,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		Weapon shotgun = new Weapon(3);
 		weapons.add(shotgun);
 
-		try
-		{
-			backImg = ImageIO.read( new File("desert.jpg" ));
-		}
-		catch ( IOException exc ){}
-		
+		backImg = loadImage("desert.jpg");
 		genBuildings();
 
 		window.setVisible(true);
@@ -130,29 +125,25 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	}
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
-			//			mapSpeedY = -10;
-			mapY += player.vy;
 			player.y -= player.vy;
+			mapY += player.vy;
 		}
 		if (direction.equals("down")) {
-			//			mapSpeedY = 10;
-			mapY -= player.vy;
 			player.y += player.vy;
+			mapY -= player.vy;
 		}
 		if (direction.equals("right")) {
-			//			mapSpeedX = 10;
-			mapX -= player.vx;
 			player.x += player.vx;
+			mapX -= player.vx;
 		}
 		if (direction.equals("left")) {
-			//			mapSpeedX = -10;
-			mapX += player.vx;
 			player.x -= player.vx;
+			mapX += player.vx;
 		}
 				
 		for(Building bd : buildings) {			
 			if(bd.intersects(player)) {
-				System.out.println("i hit him");
+//				System.out.println("i hit him");
 				if(direction.equals("right")) {
 					mapX += player.vx;
 					player.x -= player.vx;
@@ -174,6 +165,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 	void moveZombies() {
 		for (Zombie z: zombies) {
+			if (z.zx+mapX < panW/2) z.vx = 1;
+			if (z.zx+mapX > panW/2) z.vx = -1;
+			if (z.zy+mapY < panH/2) z.vy = 1;
+			if (z.zy+mapY > panH/2) z.vy = -1;		
+			
+
 			if (z.type == "light") {
 				z.zx += z.vx;
 				z.zy += z.vy;
