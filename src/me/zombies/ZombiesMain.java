@@ -1,5 +1,6 @@
 package me.zombies;
 
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,8 +42,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
 	Player player = new Player();	
-	BufferedImage backImg;
-	Weapon[] weapons = new Weapon[3]; 
+
+	private BufferedImage backImg = null;
+	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
 	ArrayList<Powerup> powerups = new ArrayList<Powerup>();
@@ -80,13 +84,21 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		drPanel = new DrawingPanel();
 		drPanel.addKeyListener(this);
 		window.add(drPanel);
-		weapons[0] = new Weapon(Weapon.PISTOL);
-		weapons[1] = new Weapon(Weapon.RIFLE);
-		weapons[2] = new Weapon(Weapon.SHOTGUN);
-		player.currentWeapon = weapons[0];
+		
+		Weapon pistol = new Weapon(1);
+		weapons.add(pistol);
+		Weapon rifle = new Weapon(2);
+		weapons.add(rifle);
+		Weapon shotgun = new Weapon(3);
+		weapons.add(shotgun);
 
-		gen();
-		backImg = loadImage("desert.jpg");
+		try
+		{
+			backImg = ImageIO.read( new File("desert.jpg" ));
+		}
+		catch ( IOException exc ){}
+		genBuildings();
+
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
 		drPanel.repaint();
@@ -110,13 +122,29 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 
-	//Adding Buildings to an array
-	void gen() {
-		for(int i=0;i<10;i++) {
-			buildings.add(new Building(player, panW/2, panH/2));
-		}
+	//Adding BUildings to an array
+	void genBuildings() {
+		for(int i=0;i<55;i++) {
+			buildings.add(new Building(player));			
+		}		
 	}
 
+	void resetBuildingLocation() {
+		//DAMN!!!! This sort of for loop NEVER lets you change the object's values.
+		//for (Building bd: buildings) {
+		for (int i=0; i<buildings.size(); i++) {
+			Building bd = buildings.get(i);
+			//System.out.println(bd.toString());
+			
+			if(bd.intersects(player)){
+				//System.out.print("*** ");
+				bd.x = bd.x + bd.width + 50;
+				//bd.colour = Color.YELLOW;
+				//System.out.println(bd.toString());
+			}
+		}
+
+	}
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
 			mapY -= player.vy;
@@ -154,8 +182,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 			
 			//Detect if zombie and player are in the same location
-			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
-					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
+//			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
+//					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
+//
+//				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
+//						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
+//					player.decreaseHP(100, z);
 
 				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
 						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
@@ -168,8 +200,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 					if (player.y+player.r > z.zy) z.zy -= 30;	//Approach from above
 					break;
 				}
-			}		
-		}
+//			}		
+//		}
 	}
 	
 	void usePowerups() {
@@ -199,20 +231,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	
 	
 	BufferedImage loadImage(String fn) {
-		BufferedImage image = null;
-		
+		BufferedImage image = null;		
 		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream("desert.jpg");
-		try
-		{
+		try {
 		    image = ImageIO.read(inputStr);
-		}
-		catch ( IOException exc ){
-			
-		}
+		} catch ( IOException exc ){}
 		
 		return image;
 	}
-
+	
 	@SuppressWarnings("serial")
 	private class DrawingPanel extends JPanel {
 		boolean screenInit = false;
@@ -223,13 +250,14 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		@Override
 		public void paintComponent(Graphics g) {
 			//drPanel.requestFocus();
-			panH = this.getHeight();
 			panW = this.getWidth();
+			panH = this.getHeight();			
 
 			if (!screenInit) {	//only do this the very first time that the screen is painted
 				player.x=panW/2;				
 				player.y=panH/2;
-
+				resetBuildingLocation();
+				
 				for (Zombie z : zombies) {
 					int testX = (int) (Math.random()*panW);
 					int testY = (int) (Math.random()*panH);
@@ -264,14 +292,17 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.setColor(Color.GREEN.darker());
 			g.drawImage(backImg, 0, 0, panW, panH, drPanel);	//background image
 			
+			for(Building bd : buildings) {	
+				bd.paint(g);				
+			}
 			//drawPlayer
 			g.setColor(Color.BLUE);			
-			g.fillOval(player.x-player.r/2, player.y-player.r/2, player.r, player.r);
+			g.fillOval(player.x-player.width/2, player.y-player.height/2, player.width, player.height);
 
-			for(Building bd : buildings) {	
-				bd.paint(g);
-			}
-			//Health Bar
+			
+
+		
+
 			g.setColor(Color.BLACK);
 			g.drawRect(10, 10, 500, 20);			
 			g.setColor(Color.RED);
@@ -309,15 +340,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			movePlayer("down");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
-			movePlayer("Swap");
-			int weaponnum = player.currentWeapon.type;
-			weaponnum++;
-			if(weaponnum > weapons.length) {
-				weaponnum = 0;
-			}
-			player.currentWeapon = weapons[weaponnum];
-			System.out.println(player.currentWeapon.name);
-			System.out.print(" " + weaponnum);
+			
 		}
 	}
 
@@ -325,17 +348,23 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	public void keyReleased(KeyEvent e) {}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {}
+
+	public void mouseClicked(MouseEvent e) {
+	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {
+		Weapon.shoot();
+	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {}
-
+	public void mouseReleased(MouseEvent e) {
+	}
 	@Override
-	public void mouseEntered(MouseEvent e) {}
-
+	public void mouseEntered(MouseEvent e) {
+	}
 	@Override
-	public void mouseExited(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {
+	}
+
 }
