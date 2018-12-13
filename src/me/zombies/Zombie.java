@@ -34,7 +34,7 @@ class Zombie extends Rectangle {
 	}
 	
 	void paint(Graphics g) {
-		g.fillOval(zx-ZombiesMain.mapX, zy-ZombiesMain.mapY, width, height);
+		g.fillOval(zx+ZombiesMain.mapX, zy+ZombiesMain.mapY, width, height);
 	}
 	
 	int getHealth() {

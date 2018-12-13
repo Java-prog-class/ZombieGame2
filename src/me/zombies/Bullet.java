@@ -1,18 +1,28 @@
 package me.zombies;
 
-public class Bullet {
+import java.awt.*;
+
+public class Bullet extends Rectangle{
 	
-	int x,y,r;
-	int vx = 10, vy = 10;
+	double x,y,r;
+	static int spedp=10;
+	static int speds=5;
+	static int spedr=15;
+	double vx,vy;
 	
-	Bullet(){
+	Bullet(double vx,double vy){
 		x=ZombiesMain.panW/2;
 		y=ZombiesMain.panH/2;
-		r=10;
+		width = height=10;
+		
+		this.vx=vx;
+		this.vy=vy;
 	}
 	
-	void shoot(){
-		
+	void paint(Graphics g) {
+		g.setColor(Color.BLUE);
+		g.fillOval((int)x+ZombiesMain.mapX, (int)y+ZombiesMain.mapY, width, height);
 	}
+
 	
 }
