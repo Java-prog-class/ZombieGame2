@@ -86,6 +86,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			backImg = ImageIO.read( new File("desert.jpg" ));
 		}
 		catch ( IOException exc ){}
+		
 		genBuildings();
 
 		window.setVisible(true);
@@ -107,13 +108,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 	//Adding BUildings to an array
 	void genBuildings() {
-		for(int i=0;i<55;i++) {
-			buildings.add(new Building(player));			
+		for(int i=0;i<75;i++) {
+			buildings.add(new Building(player,panW,panH));			
 		}		
 	}
 
 	void resetBuildingLocation() {
-		//DAMN!!!! This sort of for loop NEVER lets you change the object's values.
 		//for (Building bd: buildings) {
 		for (int i=0; i<buildings.size(); i++) {
 			Building bd = buildings.get(i);
@@ -131,20 +131,44 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
 			//			mapSpeedY = -10;
-			mapY -= player.vy;
+			mapY += player.vy;
+			player.y -= player.vy;
 		}
 		if (direction.equals("down")) {
 			//			mapSpeedY = 10;
-			mapY += player.vy;
+			mapY -= player.vy;
+			player.y += player.vy;
 		}
 		if (direction.equals("right")) {
 			//			mapSpeedX = 10;
-			mapX += player.vx;
+			mapX -= player.vx;
+			player.x += player.vx;
 		}
 		if (direction.equals("left")) {
 			//			mapSpeedX = -10;
-			mapX -= player.vx;
+			mapX += player.vx;
+			player.x -= player.vx;
 		}
+				
+		for(Building bd : buildings) {			
+			if(bd.intersects(player)) {
+				System.out.println("i hit him");
+				if(direction.equals("right")) {
+					mapX += player.vx;
+					player.x -= player.vx;
+				}else if(direction.equals("left")) {
+					mapX -= player.vx;
+					player.x += player.vx;
+				}else if(direction.equals("up")) {
+					mapY -= player.vy;
+					player.y += player.vy;
+				}else if(direction.equals("down")) {
+					mapY += player.vy;
+					player.y -= player.vy;
+				}
+			}
+		}	
+	
 		//		System.out.println(mapX + " " + mapY);
 	}
 
@@ -232,7 +256,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 			//drawPlayer
 			g.setColor(Color.BLUE);			
-			g.fillOval(player.x-player.width/2, player.y-player.height/2, player.width, player.height);
+			g.fillOval(player.x +mapX, player.y+mapY, player.width, player.height);
 
 			
 
