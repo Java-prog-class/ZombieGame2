@@ -10,7 +10,8 @@ class Zombie extends Rectangle {
 	String type = "medium";	//light, medium, or heavy
 	int zx, zy;	//Position;
 	int vx, vy;	//Speed	
-	int r = 15;	//Radius of drawing
+	int width = height = 15;
+	//int r = 15;	//Radius of drawing
 		
 	public Zombie(String type) {	 
 		//Set various types
@@ -33,7 +34,7 @@ class Zombie extends Rectangle {
 	}
 	
 	void paint(Graphics g) {
-		g.fillOval(zx-ZombiesMain.mapX, zy-ZombiesMain.mapY, r, r);
+		g.fillOval(zx-ZombiesMain.mapX, zy-ZombiesMain.mapY, width, height);
 	}
 	
 	int getHealth() {

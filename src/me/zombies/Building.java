@@ -25,7 +25,7 @@ class Building extends Rectangle{
 	void paint(Graphics g) {
 		g.setColor(colour);
 		//g.fillRect(x-ZombiesMain.mapX, y-ZombiesMain.mapY, width, height);
-		g.fillRect(x, y, width, height);
+		g.fillRect(x-ZombiesMain.mapX, y-ZombiesMain.mapY, width, height);
 		
 	}
 		
