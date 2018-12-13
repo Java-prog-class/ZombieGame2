@@ -9,7 +9,7 @@ package me.zombies;
 	Player(){
 		x=ZombiesMain.panW/2;
 		y=ZombiesMain.panH/2;
-		r=20;
+		width=height=20;		
 	}
 	
 	void decreaseHP(int n, Zombie z){
