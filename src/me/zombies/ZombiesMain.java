@@ -145,27 +145,53 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 
 	}
+	
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
-			mapY -= player.vy;
-		}
-		if (direction.equals("down")) {
+			player.y -= player.vy;
 			mapY += player.vy;
 		}
-		if (direction.equals("right")) {
-			mapX += player.vx;
+		if (direction.equals("down")) {
+			player.y += player.vy;
+			mapY -= player.vy;
 		}
-		if (direction.equals("left")) {
+		if (direction.equals("right")) {
+			player.x += player.vx;
 			mapX -= player.vx;
 		}
+		if (direction.equals("left")) {
+			player.x -= player.vx;
+			mapX += player.vx;
+		}
+				
+		for(Building bd : buildings) {			
+			if(bd.intersects(player)) {
+//				System.out.println("i hit him");
+				if(direction.equals("right")) {
+					mapX += player.vx;
+					player.x -= player.vx;
+				}else if(direction.equals("left")) {
+					mapX -= player.vx;
+					player.x += player.vx;
+				}else if(direction.equals("up")) {
+					mapY -= player.vy;
+					player.y += player.vy;
+				}else if(direction.equals("down")) {
+					mapY += player.vy;
+					player.y -= player.vy;
+				}
+			}
+		}	
+	
+		//		System.out.println(mapX + " " + mapY);
 	}
 
 	void moveZombies() {
 		for (Zombie z: zombies) {
-			if (z.zx-mapX < player.x) z.vx = 1;
-			if (z.zx-mapX > player.x) z.vx = -1;
-			if (z.zy-mapY < player.y) z.vy = 1;
-			if (z.zy-mapY > player.y) z.vy = -1;		
+			if (z.zx+mapX < panW/2) z.vx = 1;
+			if (z.zx+mapX > panW/2) z.vx = -1;
+			if (z.zy+mapY < panH/2) z.vy = 1;
+			if (z.zy+mapY > panH/2) z.vy = -1;		
 			
 
 			if (z.type == "light") {
@@ -230,7 +256,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 		}
 	}
-
 
 	BufferedImage loadImage(String fn) {
 		BufferedImage image = null;		
@@ -362,7 +387,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 		lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());		
 	}
-
 	@Override
 	public void mouseReleased(MouseEvent e) {
 	}

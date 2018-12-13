@@ -1,5 +1,7 @@
 package me.zombies;
 
+import java.awt.Graphics;
+
 public class Bullet {
 	
 	int x,y,r;
@@ -11,8 +13,11 @@ public class Bullet {
 		r=10;
 	}
 	
-	void shoot(){
+	void paint(Graphics g) {
+		g.fillOval(x, y, r, r);
+	}
+
+	void shoot() {
 		
 	}
-	
 }
