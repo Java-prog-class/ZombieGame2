@@ -19,7 +19,7 @@ class Powerup extends Rectangle {
 	}
 	
 	void paint(Graphics g) {
-		g.fillRect(px-ZombiesMain.mapX, py-ZombiesMain.mapY, width, height);
+		g.fillRect(px+ZombiesMain.mapX, py+ZombiesMain.mapY, width, height);
 	}
 	
 	String getType() {
