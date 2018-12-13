@@ -113,7 +113,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	//Adding Buildings to an array
 	void gen() {
 		for(int i=0;i<5;i++) {
-			buildings.add(new Building(player, panW/2, panH/2));
+			buildings.add(new Building(player));
 		}
 	}
 
