@@ -9,16 +9,13 @@ class Zombie extends Rectangle {
 	String type = "medium";	//light, medium, or heavy	
 	int vx, vy;	//Speed	
 
-//	
-	//int r = 15;	//Radius of drawing
-		
 	public Zombie(String type) {	 
 		//Set various types
 		if (type.equals("light")) this.type = "light";
 		if (type.equals("medium")) this.type = "medium";
 		if (type.equals("heavy")) this.type = "heavy";;
 		width = height = 15;
-	
+	}
 	void decreaseHealth(int n) {
 		
 		if (type == "light") {
