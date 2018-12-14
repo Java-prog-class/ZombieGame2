@@ -12,10 +12,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -35,8 +37,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	static int mapSpeedY = 0;
 	static int mapX = 0, mapY = 0;
 	final static int TZ_SPEED = 10;
-	final static int POWERUP_SPEED = 100;
-	boolean invincible = false;
 
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
@@ -53,10 +53,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	ArrayList<Powerup> powerups = new ArrayList<Powerup>();
 	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 
+
+
 	ZombiesMain(){
 		setup();
 		spawnEnemies(round*10);
-		spawnPowerups(5);
+		
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -103,6 +105,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
+
 		drPanel.repaint();
 	}
 
@@ -117,14 +120,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 
-	void spawnPowerups(int n) {
-		for (int i = 0; i < n; i++) {
-			Powerup p = new Powerup(i);
-			powerups.add(p);
-		}
-	}
-
-	//Adding Buildings to an array
+	//Adding BUildings to an array
 	void genBuildings() {
 		for(int i=0;i<75;i++) {
 			buildings.add(new Building(player,panW,panH));			
@@ -136,11 +132,11 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		for (int i=0; i<buildings.size(); i++) {
 			Building bd = buildings.get(i);
 			//System.out.println(bd.toString());
-
+			
 			if(bd.intersects(player)){
-				//				System.out.print("*** ");
+				//System.out.print("*** ");
 				bd.x = bd.x + bd.width + 50;
-				//				bd.colour = Color.YELLOW;
+				//bd.colour = Color.YELLOW;
 				//System.out.println(bd.toString());
 			}
 		}
@@ -166,8 +162,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 				
 		for(Building bd : buildings) {			
-			if(bd.intersects(player)) {
-//				System.out.println("i hit him");
+			if(bd.intersects(player)) {;
 				if(direction.equals("right")) {
 					mapX += player.vx;
 					player.x -= player.vx;
@@ -183,52 +178,39 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				}
 			}
 		}	
-	
-		//		System.out.println(mapX + " " + mapY);
 	}
 
 	void moveZombies() {
 		for (Zombie z: zombies) {
-			if (z.zx+mapX < panW/2) z.vx = 1;
-			if (z.zx+mapX > panW/2) z.vx = -1;
-			if (z.zy+mapY < panH/2) z.vy = 1;
-			if (z.zy+mapY > panH/2) z.vy = -1;		
+			if (z.x+mapX < panW/2) z.vx = 1;
+			if (z.x+mapX > panW/2) z.vx = -1;
+			if (z.y+mapY < panH/2) z.vy = 1;
+			if (z.y+mapY > panH/2) z.vy = -1;		
 			
 
 			if (z.type == "light") {
-				z.zx += z.vx*3;
-				z.zy += z.vy*3;
+				z.x += z.vx*3;
+				z.y += z.vy*3;
 			}
 			if (z.type == "medium") {
-				z.zx += z.vx*2;
-				z.zy += z.vy*2;
+				z.x += z.vx*2;
+				z.y += z.vy*2;
 			}
 			if (z.type == "heavy") {
-				z.zx += z.vx;
-				z.zy += z.vy;
+				z.x += z.vx;
+				z.y += z.vy;
 			}
 
+
 			//Detect if zombie and player are in the same location
-
-//			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
-//					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
-//
-//				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
-//						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
-//					player.decreaseHP(100, z);
-
-//				if (z.zy-mapY+z.r/2 >= panH/2-player.height && z.zy-mapY+z.r/2 <= panH/2+player.height
-//						|| z.zy-mapY-z.r/2 <= panH/2-player.height && z.zy-mapY-z.r/2 >= panH/2+player.height) {
 			if (z.intersects(player)) {
-			//if (z.zx-mapX == player.x && z.zy-mapX == player.y) { 
 				if (!invincible) player.decreaseHP(100, z);
 				//Move zombie away after hitting player
-				if (player.x+player.width > z.zx) z.zx -= 30;	//Approach from right
-				if (player.x-player.width < z.zx) z.zx += 30;	//Approach from left
-				if (player.y-player.height < z.zy) z.zy += 30;	//Approach from beneath
-				if (player.y+player.height > z.zy) z.zy -= 30;	//Approach from above
+				if (player.x+player.width > z.x) z.x -= 30;	//Approach from right
+				if (player.x-player.width < z.x) z.x += 30;	//Approach from left
+				if (player.y-player.height < z.y) z.y += 30;	//Approach from beneath
+				if (player.y+player.height > z.y) z.y -= 30;	//Approach from above
 				break;
-				//				}
 			}		
 		}
 	}
@@ -245,17 +227,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				}
 				if (p.type.equals("IncreaseDamage")) {
 
-				}
-				if (p.type.equals("IncreaseSpeed")) {
-					player.vx += 5;
-					player.vy += 5;
-				}
-				if (p.type.equals("RestoreHealth")) {
-					player.HP = Player.HP;
-				}
-				powerups.remove(p);
-			}
-		}
+	  	}		
+	  }
 	}
 
 	void moveBullets() {
@@ -267,16 +240,14 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	
 	BufferedImage loadImage(String fn) {
 		BufferedImage image = null;		
-		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream(fn);
+		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream("desert.jpg");
 		try {
-			image = ImageIO.read(inputStr);
-		} catch ( IOException exc ){
-			System.out.println("image not found");
-		}
-
+		    image = ImageIO.read(inputStr);
+		} catch ( IOException exc ){}
+		
 		return image;
 	}
-
+	
 	@SuppressWarnings("serial")
 	private class DrawingPanel extends JPanel {
 		boolean screenInit = false;
@@ -291,20 +262,23 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			panW = this.getWidth();
 			panH = this.getHeight();			
 
-			if (!screenInit) {	//only do this the very first time that the screen is painted
+			//***********************************************************************
+			//only do this the very first time that the screen is painted
+			if (!screenInit) {	
 				player.x=panW/2;				
 				player.y=panH/2;
 				resetBuildingLocation();
-
+				
 				for (Zombie z : zombies) {
+
 					int testX = (int) (Math.random()*panW);
 					int testY = (int) (Math.random()*panH);
 					if (z.intersects(player)) {
 						return;	
 					}
 					else {
-						z.zx = testX;
-						z.zy = testY;
+						z.x = testX;
+						z.y = testY;
 					}
 				}
 				for (Powerup p : powerups) {
@@ -324,7 +298,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				//System.out.println(panW + " " + panH);
 				if (panW > 10) screenInit = true;
 			}
-
+			//***********************************************************************
+			
 			super.paintComponent(g); //clear screen and repaint using background color
 			Graphics2D g2 = (Graphics2D) g;		
 
@@ -332,7 +307,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 			g.setColor(Color.GREEN.darker());
 			g.drawImage(backImg, 0, 0, panW, panH, drPanel);	//background image
-
+			
 			for(Building bd : buildings) {	
 				bd.paint(g);				
 			}
@@ -340,22 +315,23 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.setColor(Color.BLUE);			
 			g.fillOval(player.x +mapX, player.y+mapY, player.width, player.height);
 
+			
+
+		
+
 			g.setColor(Color.BLACK);
 			g.drawRect(10, 10, 500, 20);			
 			g.setColor(Color.RED);
 			g.fillRect(10, 10, Player.HP/2, 20);
-
-			for (Zombie z : zombies) {	
+			
+			for (Zombie z : zombies) {
 				if (z.type.equals("light")) g.setColor(Color.RED.brighter());
-				if (z.type.equals("medium")) g.setColor(Color.RED.darker());
-				if (z.type.equals("heavy")) g.setColor(Color.RED.darker().darker());
+				if (z.type.equals("medium")) g.setColor(Color.RED);
+				if (z.type.equals("heavy")) g.setColor(Color.RED.darker());
 				z.paint(g);
 			}
-			for (Powerup p : powerups) {	
-				g.setColor(Color.YELLOW);
-				//if (p.type.equals("IncreaseHealth")) g.setColor(Color.PINK);
-				p.paint(g);
-			}
+
+
 		}
 	}
 
@@ -366,8 +342,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			movePlayer("right");
 		}
-		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {
-			movePlayer("up");
+		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {;
+		movePlayer("up");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
 			movePlayer("left");
@@ -376,12 +352,14 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			movePlayer("down");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
-
+			
 		}
 	}
 	@Override
-	public void keyReleased(KeyEvent e) {}
-
+	public void keyReleased(KeyEvent e) {
+		mapSpeedX = 0;
+		mapSpeedY = 0;
+	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	}

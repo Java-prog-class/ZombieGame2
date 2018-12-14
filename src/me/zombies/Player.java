@@ -16,14 +16,9 @@ class Player extends Rectangle{
 	}
 	
 	void decreaseHP(int n, Zombie z){
-		if (z.type == "light") {
-			Player.HP-= n/Math.random()*.100;
-		}
-		if (z.type == "medium") {
-			Player.HP -= n/Math.random()*.50;
-		}
-		if (z.type == "heavy") {
-			Player.HP -= n/Math.random()*.25;
-		}
+
+		if (z.type == "light") HP-= n/Math.random()*.100;
+		if (z.type == "medium") HP -= n/Math.random()*.50;
+		if (z.type == "heavy") HP -= n/Math.random()*.25;
 	}
 }
