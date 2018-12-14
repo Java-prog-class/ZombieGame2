@@ -1,8 +1,9 @@
 package me.zombies;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
-class Zombie {
+class Zombie extends Rectangle {
 	//Static Variables
 	private  int health = 500;
 	String type = "medium";	//light, medium, or heavy
@@ -25,6 +26,7 @@ class Zombie {
 			vx = 0;
 			vy = 0;
 		}
+		width= height = r;
 	}
 	
 	void decreaseHealth(int n) {
