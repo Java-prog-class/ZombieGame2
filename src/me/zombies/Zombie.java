@@ -6,28 +6,18 @@ import java.awt.Rectangle;
 class Zombie extends Rectangle {
 	//Static Variables
 	private  int health = 500;
-	String type = "medium";	//light, medium, or heavy
-	int zx, zy;	//Position;
+	String type = "medium";	//light, medium, or heavy	
 	int vx, vy;	//Speed	
-	int r = 15;	//Radius of drawing
-	
-	
-	Zombie(String type) {	
-		//Set various speeds
-		if (type == "light") {
-			vx = 0;
-			vy = 0;
-		}
-		if (type == "medium") {
-			vx = 0;
-			vy = 0;
-		}
-		if (type == "heavy") {
-			vx = 0;
-			vy = 0;
-		}
-		width= height = r;
-	}
+
+//	
+	//int r = 15;	//Radius of drawing
+		
+	public Zombie(String type) {	 
+		//Set various types
+		if (type.equals("light")) this.type = "light";
+		if (type.equals("medium")) this.type = "medium";
+		if (type.equals("heavy")) this.type = "heavy";;
+		width = height = 15;
 	
 	void decreaseHealth(int n) {
 		
@@ -43,7 +33,7 @@ class Zombie extends Rectangle {
 	}
 	
 	void paint(Graphics g) {
-		g.fillOval(zx+ZombiesMain.mapX, zy+ZombiesMain.mapY, width, height);
+		g.fillOval(x+ZombiesMain.mapX, y+ZombiesMain.mapY, width, height);
 	}
 	
 	int getHealth() {

@@ -142,8 +142,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 				
 		for(Building bd : buildings) {			
-			if(bd.intersects(player)) {
-//				System.out.println("i hit him");
+			if(bd.intersects(player)) {;
 				if(direction.equals("right")) {
 					mapX += player.vx;
 					player.x -= player.vx;
@@ -159,49 +158,57 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				}
 			}
 		}	
-	
-		//		System.out.println(mapX + " " + mapY);
 	}
 
 	void moveZombies() {
 		for (Zombie z: zombies) {
-			if (z.zx+mapX < panW/2) z.vx = 1;
-			if (z.zx+mapX > panW/2) z.vx = -1;
-			if (z.zy+mapY < panH/2) z.vy = 1;
-			if (z.zy+mapY > panH/2) z.vy = -1;		
+			if (z.x+mapX < panW/2) z.vx = 1;
+			if (z.x+mapX > panW/2) z.vx = -1;
+			if (z.y+mapY < panH/2) z.vy = 1;
+			if (z.y+mapY > panH/2) z.vy = -1;		
 			
 
 			if (z.type == "light") {
-				z.zx += z.vx;
-				z.zy += z.vy;
+				z.x += z.vx*3;
+				z.y += z.vy*3;
 			}
 			if (z.type == "medium") {
-				z.zx += z.vx;
-				z.zy += z.vy;
+				z.x += z.vx*2;
+				z.y += z.vy*2;
 			}
 			if (z.type == "heavy") {
-				z.zx += z.vx;
-				z.zy += z.vy;
+				z.x += z.vx;
+				z.y += z.vy;
 			}
 
 
 			//Detect if zombie and player are in the same location
-//			if (z.zx-mapX+z.r/2 >= panW/2-player.r && z.zx-mapX+z.r/2 <= panW/2+player.r
-//					|| z.zx-mapX-z.r/2 <= panW/2-player.r && z.zx-mapX-z.r/2 >= panW/2+player.r) {
-//
-//				if (z.zy-mapY+z.r/2 >= panH/2-player.r && z.zy-mapY+z.r/2 <= panH/2+player.r
-//						|| z.zy-mapY-z.r/2 <= panH/2-player.r && z.zy-mapY-z.r/2 >= panH/2+player.r) {
-//					player.decreaseHP(100, z);
+			if (z.intersects(player)) {
+				if (!invincible) player.decreaseHP(100, z);
+				//Move zombie away after hitting player
+				if (player.x+player.width > z.x) z.x -= 30;	//Approach from right
+				if (player.x-player.width < z.x) z.x += 30;	//Approach from left
+				if (player.y-player.height < z.y) z.y += 30;	//Approach from beneath
+				if (player.y+player.height > z.y) z.y -= 30;	//Approach from above
+				break;
+			}		
+		}
+	}
 
-					//Move zombie away after hitting player
-					if (player.x+player.width > z.zx) z.zx -= 10;	//Approach from right
-					if (player.x+player.width < z.zx) z.zx += 10;	//Approach from left
-					if (player.y < z.zy) z.zy += 10;	//Approach from beneath
-					if (player.y > z.zy) z.zy -= 10;	//Approach from above
-					break;
+	void usePowerups() {
+		for (Powerup p : powerups) {
+			if (p.intersects(player)) {
+				if (p.type.equals("IncreaseHealth")) {
+					player.HP += 200;
+					if (player.HP > Player.HP) player.HP = Player.HP;
 				}
-//			}		
-//		}
+				if (p.type.equals("Invincible")) {
+					invincible = true;
+				}
+				if (p.type.equals("IncreaseDamage")) {
+
+	  	}		
+	  }
 	}
 	
 	BufferedImage loadImage(String fn) {
@@ -227,19 +234,41 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			panW = this.getWidth();
 			panH = this.getHeight();			
 
-			if (!screenInit) {	//only do this the very first time that the screen is painted
+			//***********************************************************************
+			//only do this the very first time that the screen is painted
+			if (!screenInit) {	
 				player.x=panW/2;				
 				player.y=panH/2;
 				resetBuildingLocation();
 				
 				for (Zombie z : zombies) {
-					z.zx = (int) (Math.random()*panW);
-					z.zy = (int) (Math.random()*panH);
+
+					int testX = (int) (Math.random()*panW);
+					int testY = (int) (Math.random()*panH);
+					if (z.intersects(player)) {
+						return;	
+					}
+					else {
+						z.x = testX;
+						z.y = testY;
+					}
+				}
+				for (Powerup p : powerups) {
+					int testX = (int) (Math.random()*panW);
+					int testY = (int) (Math.random()*panH);
+					if (p.intersects(player)) {
+						return;	
+					}
+					else {
+						p.px = testX;
+						p.py = testY;
+					}
 				}
 				//System.out.println(panW + " " + panH);
 				if (panW > 10) screenInit = true;
 			}
-
+			//***********************************************************************
+			
 			super.paintComponent(g); //clear screen and repaint using background color
 			Graphics2D g2 = (Graphics2D) g;		
 
