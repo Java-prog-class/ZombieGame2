@@ -18,7 +18,7 @@ class Zombie extends Rectangle {
 		if (type.equals("medium")) this.type = "medium";
 		if (type.equals("heavy")) this.type = "heavy";;
 		width = height = 15;
-	
+	}
 	void decreaseHealth(int n) {
 		
 		if (type == "light") {
