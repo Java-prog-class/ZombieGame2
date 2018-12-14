@@ -3,12 +3,12 @@ package me.zombies;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-@SuppressWarnings("serial")
 class Zombie extends Rectangle {
-	//Variables
+	//Static Variables
 	private  int health = 500;
 	String type = "medium";	//light, medium, or heavy	
 	int vx, vy;	//Speed	
+
 //	
 	//int r = 15;	//Radius of drawing
 		
@@ -19,16 +19,15 @@ class Zombie extends Rectangle {
 		if (type.equals("heavy")) this.type = "heavy";;
 		width = height = 15;
 	}
-	
 	void decreaseHealth(int n) {
 		
-		if (type.equals("light")) {
+		if (type == "light") {
 			health -= n/Math.random()*.25;
 		}
-		if (type.equals("medium")) {
+		if (type == "medium") {
 			health -= n/Math.random()*.50;
 		}
-		if (type.equals("heavy") ) {			
+		if (type == "heavy") {			
 			health -= n/Math.random()*.100;
 		}
 	}
