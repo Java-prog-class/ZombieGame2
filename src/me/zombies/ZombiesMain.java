@@ -13,10 +13,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -34,8 +36,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	static int mapSpeedY = 0;
 	static int mapX = 0, mapY = 0;
 	final static int TZ_SPEED = 10;
-	final static int POWERUP_SPEED = 100;
-	boolean invincible = false;
 
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
@@ -46,12 +46,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
-	ArrayList<Powerup> powerups = new ArrayList<Powerup>();
+
+
 
 	ZombiesMain(){
 		setup();
 		spawnEnemies(round*10);
-		spawnPowerups(5);
+		
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -61,16 +62,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 		});
 		moveTimer.start();
-
-
-		Timer powerTimer = new Timer(POWERUP_SPEED, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				usePowerups();
-				drPanel.repaint();
-			}
-		});
-		powerTimer.start();
 	}
 
 
@@ -95,6 +86,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
+
 		drPanel.repaint();
 	}
 
@@ -109,14 +101,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 
-	void spawnPowerups(int n) {
-		for (int i = 0; i < n; i++) {
-			Powerup p = new Powerup(i);
-			powerups.add(p);
-		}
-	}
-
-	//Adding Buildings to an array
+	//Adding BUildings to an array
 	void genBuildings() {
 		for(int i=0;i<75;i++) {
 			buildings.add(new Building(player,panW,panH));			
@@ -128,11 +113,11 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		for (int i=0; i<buildings.size(); i++) {
 			Building bd = buildings.get(i);
 			//System.out.println(bd.toString());
-
+			
 			if(bd.intersects(player)){
-				//				System.out.print("*** ");
+				//System.out.print("*** ");
 				bd.x = bd.x + bd.width + 50;
-				//				bd.colour = Color.YELLOW;
+				//bd.colour = Color.YELLOW;
 				//System.out.println(bd.toString());
 			}
 		}
@@ -196,6 +181,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.y += z.vy;
 			}
 
+
 			//Detect if zombie and player are in the same location
 			if (z.intersects(player)) {
 				if (!invincible) player.decreaseHP(100, z);
@@ -221,32 +207,20 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				}
 				if (p.type.equals("IncreaseDamage")) {
 
-				}
-				if (p.type.equals("IncreaseSpeed")) {
-					player.vx += 5;
-					player.vy += 5;
-				}
-				if (p.type.equals("RestoreHealth")) {
-					player.HP = Player.HP;
-				}
-				powerups.remove(p);
-			}
-		}
+	  	}		
+	  }
 	}
-
-
+	
 	BufferedImage loadImage(String fn) {
 		BufferedImage image = null;		
-		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream(fn);
+		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream("desert.jpg");
 		try {
-			image = ImageIO.read(inputStr);
-		} catch ( IOException exc ){
-			System.out.println("image not found");
-		}
-
+		    image = ImageIO.read(inputStr);
+		} catch ( IOException exc ){}
+		
 		return image;
 	}
-
+	
 	@SuppressWarnings("serial")
 	private class DrawingPanel extends JPanel {
 		boolean screenInit = false;
@@ -266,8 +240,9 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				player.x=panW/2;				
 				player.y=panH/2;
 				resetBuildingLocation();
-
+				
 				for (Zombie z : zombies) {
+
 					int testX = (int) (Math.random()*panW);
 					int testY = (int) (Math.random()*panH);
 					if (z.intersects(player)) {
@@ -301,7 +276,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 			g.setColor(Color.GREEN.darker());
 			g.drawImage(backImg, 0, 0, panW, panH, drPanel);	//background image
-
+			
 			for(Building bd : buildings) {	
 				bd.paint(g);				
 			}
@@ -309,22 +284,23 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.setColor(Color.BLUE);			
 			g.fillOval(player.x +mapX, player.y+mapY, player.width, player.height);
 
+			
+
+		
+
 			g.setColor(Color.BLACK);
 			g.drawRect(10, 10, 500, 20);			
 			g.setColor(Color.RED);
 			g.fillRect(10, 10, Player.HP/2, 20);
-
-			for (Zombie z : zombies) {	
+			
+			for (Zombie z : zombies) {
 				if (z.type.equals("light")) g.setColor(Color.RED.brighter());
-				if (z.type.equals("medium")) g.setColor(Color.RED.darker());
-				if (z.type.equals("heavy")) g.setColor(Color.RED.darker().darker());
+				if (z.type.equals("medium")) g.setColor(Color.RED);
+				if (z.type.equals("heavy")) g.setColor(Color.RED.darker());
 				z.paint(g);
 			}
-			for (Powerup p : powerups) {	
-				g.setColor(Color.YELLOW);
-				//if (p.type.equals("IncreaseHealth")) g.setColor(Color.PINK);
-				p.paint(g);
-			}
+
+
 		}
 	}
 
@@ -336,8 +312,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			movePlayer("right");
 		}
-		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {
-			movePlayer("up");
+		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {;
+		movePlayer("up");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
 			movePlayer("left");
@@ -346,13 +322,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			movePlayer("down");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
-
+			
 		}
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {}
-
+	public void keyReleased(KeyEvent e) {
+		mapSpeedX = 0;
+		mapSpeedY = 0;
+	}
 	@Override
 
 	public void mouseClicked(MouseEvent e) {
