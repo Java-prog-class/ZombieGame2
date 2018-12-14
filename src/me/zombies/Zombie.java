@@ -7,10 +7,9 @@ import java.awt.Rectangle;
 class Zombie extends Rectangle {
 	//Variables
 	private  int health = 500;
-	String type = "medium";	//light, medium, or heavy
-	int zx, zy;	//Position;
+	String type = "medium";	//light, medium, or heavy	
 	int vx, vy;	//Speed	
-	int width = height = 15;
+//	
 	//int r = 15;	//Radius of drawing
 		
 	public Zombie(String type) {	 
@@ -18,6 +17,7 @@ class Zombie extends Rectangle {
 		if (type.equals("light")) this.type = "light";
 		if (type.equals("medium")) this.type = "medium";
 		if (type.equals("heavy")) this.type = "heavy";;
+		width = height = 15;
 	}
 	
 	void decreaseHealth(int n) {
@@ -34,7 +34,7 @@ class Zombie extends Rectangle {
 	}
 	
 	void paint(Graphics g) {
-		g.fillOval(zx+ZombiesMain.mapX, zy+ZombiesMain.mapY, width, height);
+		g.fillOval(x+ZombiesMain.mapX, y+ZombiesMain.mapY, width, height);
 	}
 	
 	int getHealth() {
