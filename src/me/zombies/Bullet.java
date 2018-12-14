@@ -23,6 +23,4 @@ public class Bullet extends Rectangle{
 		g.setColor(Color.BLUE);
 		g.fillOval((int)x+ZombiesMain.mapX, (int)y+ZombiesMain.mapY, width, height);
 	}
-
-	
 }
