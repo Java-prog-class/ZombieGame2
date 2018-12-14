@@ -214,22 +214,23 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			if (p.intersects(player)) {
 				if (p.type.equals("IncreaseHealth")) {
 					player.HP += 200;
-					if (player.HP > Player.HP) player.HP = Player.HP;
+					if (player.HP > 1000) player.HP = 1000;
 				}
 				if (p.type.equals("Invincible")) {
 					invincible = true;
 				}
 				if (p.type.equals("IncreaseDamage")) {
-
+					
 				}
 				if (p.type.equals("IncreaseSpeed")) {
 					player.vx += 5;
 					player.vy += 5;
 				}
 				if (p.type.equals("RestoreHealth")) {
-					player.HP = Player.HP;
+					player.HP = 1000;
 				}
 				powerups.remove(p);
+				break;
 			}
 		}
 	}
@@ -285,8 +286,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 						return;	
 					}
 					else {
-						p.px = testX;
-						p.py = testY;
+						p.x = testX;
+						p.y = testY;
 					}
 				}
 				//System.out.println(panW + " " + panH);
@@ -321,8 +322,11 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.paint(g);
 			}
 			for (Powerup p : powerups) {	
-				g.setColor(Color.YELLOW);
-				//if (p.type.equals("IncreaseHealth")) g.setColor(Color.PINK);
+				if (p.type.equals("RestoreHealth")) g.setColor(Color.YELLOW);
+				if (p.type.equals("IncreaseHealth")) g.setColor(Color.PINK);
+				if (p.type.equals("Invincible")) g.setColor(Color.CYAN);
+				if (p.type.equals("IncreaseSpeed")) g.setColor(Color.white);
+				if (p.type.equals("IncreaseDamage")) g.setColor(Color.black);
 				p.paint(g);
 			}
 		}
