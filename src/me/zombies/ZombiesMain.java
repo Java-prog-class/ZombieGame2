@@ -13,12 +13,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -97,7 +95,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 		window.setVisible(true);
 		drPanel.requestFocus(); //do we only have to do this once?
-
 		drPanel.repaint();
 	}
 
@@ -199,7 +196,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.y += z.vy;
 			}
 
-
 			//Detect if zombie and player are in the same location
 			if (z.intersects(player)) {
 				if (!invincible) player.decreaseHP(100, z);
@@ -238,17 +234,20 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 		}
 	}
-	
+
+
 	BufferedImage loadImage(String fn) {
 		BufferedImage image = null;		
-		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream("desert.jpg");
+		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream(fn);
 		try {
-		    image = ImageIO.read(inputStr);
-		} catch ( IOException exc ){}
-		
+			image = ImageIO.read(inputStr);
+		} catch ( IOException exc ){
+			System.out.println("image not found");
+		}
+
 		return image;
 	}
-	
+
 	@SuppressWarnings("serial")
 	private class DrawingPanel extends JPanel {
 		boolean screenInit = false;
@@ -268,9 +267,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				player.x=panW/2;				
 				player.y=panH/2;
 				resetBuildingLocation();
-				
-				for (Zombie z : zombies) {
 
+				for (Zombie z : zombies) {
 					int testX = (int) (Math.random()*panW);
 					int testY = (int) (Math.random()*panH);
 					if (z.intersects(player)) {
@@ -304,7 +302,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 			g.setColor(Color.GREEN.darker());
 			g.drawImage(backImg, 0, 0, panW, panH, drPanel);	//background image
-			
+
 			for(Building bd : buildings) {	
 				bd.paint(g);				
 			}
@@ -312,19 +310,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.setColor(Color.BLUE);			
 			g.fillOval(player.x +mapX, player.y+mapY, player.width, player.height);
 
-			
-
-		
-
 			g.setColor(Color.BLACK);
 			g.drawRect(10, 10, 500, 20);			
 			g.setColor(Color.RED);
 			g.fillRect(10, 10, Player.HP/2, 20);
-			
-			for (Zombie z : zombies) {
+
+			for (Zombie z : zombies) {	
 				if (z.type.equals("light")) g.setColor(Color.RED.brighter());
-				if (z.type.equals("medium")) g.setColor(Color.RED);
-				if (z.type.equals("heavy")) g.setColor(Color.RED.darker());
+				if (z.type.equals("medium")) g.setColor(Color.RED.darker());
+				if (z.type.equals("heavy")) g.setColor(Color.RED.darker().darker());
 				z.paint(g);
 			}
 			for (Powerup p : powerups) {	
@@ -346,8 +340,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			movePlayer("right");
 		}
-		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {;
-		movePlayer("up");
+		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {
+			movePlayer("up");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
 			movePlayer("left");
@@ -356,15 +350,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			movePlayer("down");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
-			
+
 		}
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		mapSpeedX = 0;
-		mapSpeedY = 0;
-	}
+	public void keyReleased(KeyEvent e) {}
+
 	@Override
 
 	public void mouseClicked(MouseEvent e) {
