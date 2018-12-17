@@ -375,8 +375,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			player.vy=-player.speed;
 			movePlayer("down");
 		}
-		if (e.getKeyCode() == KeyEvent.VK_Q) {
-
+		if (e.getKeyCode() == KeyEvent.VK_R) {
+			
 		}
 	}
 	@Override
