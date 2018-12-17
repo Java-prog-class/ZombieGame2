@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class Bullet extends Rectangle{
 	
-	double x,y,r;
+	//double x,y,r;
 	static int spedp=10;
 	static int speds=5;
 	static int spedr=15;
