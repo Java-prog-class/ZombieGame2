@@ -4,7 +4,8 @@ import java.awt.Rectangle;
 
 class Player extends Rectangle{
 	int x,y,r;
-	int vx = 10, vy = 10;
+	int speed=10;
+	int vx = 0, vy = 0;
 	static int HP = 1000;
 	int currentWeapon = 0;
 	int width,height;

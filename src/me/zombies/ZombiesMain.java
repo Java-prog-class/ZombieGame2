@@ -204,6 +204,9 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.x += z.vx;
 				z.y += z.vy;
 			}
+			
+			z.x-=player.vx;
+			z.y-=player.vy;
 
 			//Detect if zombie and player are in the same location
 			if (z.intersects(player)) {
@@ -306,9 +309,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 						p.y = testY;
 					}
 				}
-				for (Bullet b:bullets) {
-					b.paint(g);
-				}
 				//System.out.println(panW + " " + panH);
 				if (panW > 10) screenInit = true;
 			}
@@ -348,6 +348,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (p.type.equals("IncreaseDamage")) g.setColor(Color.black);
 				p.paint(g);
 			}
+			
+			for (Bullet b:bullets) {
+				b.paint(g);
+			}
 		}
 	}
 
@@ -356,15 +360,19 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			player.vx=player.speed;
 			movePlayer("right");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {
+			player.vy=-player.speed;
 			movePlayer("up");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
+			player.vx=-player.speed;
 			movePlayer("left");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
+			player.vy=player.speed;
 			movePlayer("down");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
@@ -388,8 +396,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			int mx = e.getX();
 			int my = e.getY();
 			int w = player.currentWeapon;
-			bullets.add(weapons.get(w).shoot(mx,my,player.currentWeapon));
-			System.out.println("AHH");
+			bullets.add(weapons.get(w).shoot(mx,my,player.currentWeapon,player.x,player.y));
 			moveBullets();
 			
 		}
