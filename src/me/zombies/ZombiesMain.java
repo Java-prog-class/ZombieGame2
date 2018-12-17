@@ -360,7 +360,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			player.vx=player.speed;
+			player.vx=-player.speed;
 			movePlayer("right");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {
@@ -372,7 +372,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			movePlayer("left");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
-			player.vy=player.speed;
+			player.vy=-player.speed;
 			movePlayer("down");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
@@ -396,7 +396,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			int mx = e.getX();
 			int my = e.getY();
 			int w = player.currentWeapon;
-			bullets.add(weapons.get(w).shoot(mx,my,player.currentWeapon,player.x,player.y));
+			if (weapons.get(w).getAmmo() == 0) weapons.get(w).ammo = 0;
+			else bullets.add(weapons.get(w).shoot(mx,my,player.currentWeapon,player.x,player.y));
 			moveBullets();
 			
 		}

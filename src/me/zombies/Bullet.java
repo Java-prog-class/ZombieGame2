@@ -13,7 +13,7 @@ public class Bullet extends Rectangle{
 		this.x=x;
 		this.y=y;
 		
-		width = height = 10;
+		width = height = 8;
 		
 		this.vx=vx;
 		this.vy=vy;
