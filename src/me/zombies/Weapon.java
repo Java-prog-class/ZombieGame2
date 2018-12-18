@@ -27,22 +27,23 @@ class Weapon {
 		}
 	}
 
-	Bullet shoot(int mx,int my,int weaponNumber) {
-		double x=ZombiesMain.panW/2,y=ZombiesMain.panH/2;
+	Bullet shoot(int mx,int my,int weaponNumber,int x,int y) {
+		//double vx=ZombiesMain.panW/2,vy=ZombiesMain.panH/2;
+		double vx, vy;
 		double dX=mx-x,dY=my-y;
 		double angle=Math.atan2(dY, dX);
 
 		if (weaponNumber ==0) {
-			x = Bullet.spedp * Math.cos(angle);
-			y = Bullet.spedp * Math.sin(angle);
+			vx = Bullet.spedp * Math.cos(angle);
+			vy = Bullet.spedp * Math.sin(angle);
 		}
 		else if (weaponNumber ==1) {
-			x = Bullet.spedr * Math.cos(angle);
-			y = Bullet.spedr * Math.sin(angle);
+			vx = Bullet.spedr * Math.cos(angle);
+			vy = Bullet.spedr * Math.sin(angle);
 		}
 		else {
-			x = Bullet.speds * Math.cos(angle);
-			y = Bullet.speds * Math.sin(angle);
+			vx = Bullet.speds * Math.cos(angle);
+			vy = Bullet.speds * Math.sin(angle);
 		}
 		ammo--;
 		if (ammo < 0) ammo = 0;
@@ -50,7 +51,7 @@ class Weapon {
 		else { 
 
 		}
-		return new Bullet(x,y);
+		return new Bullet(vx,vy,x,y);
 	}
 	void reload() {
 		ammo = maxAmmo;
