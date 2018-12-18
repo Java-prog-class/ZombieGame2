@@ -3,7 +3,6 @@ package me.zombies;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,13 +11,11 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -51,18 +48,13 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
-	Player player = new Player();
-	JLabel lblWeapon = new JLabel();
-	JLabel lblAmmo = new JLabel();
-	String name = "";
+	Player player = new Player();	
 
 	private BufferedImage backImg = null;
-	
 	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
 	ArrayList<Powerup> powerups = new ArrayList<Powerup>();
-	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 
 	long t1 = System.currentTimeMillis();
 	
@@ -75,16 +67,14 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				long t2 = System.currentTimeMillis();
-				//if (t2-t1 < 15) continue;
-				//System.out.println(""+(t2-t1));
 				t1=t2;
 				moveZombies();
-				moveBullets();
 				drPanel.repaint();
 				if (Player.HP <= 0) System.exit(0);
 			}
 		});
 		moveTimer.start();
+
 
 		Timer powerTimer = new Timer(POWERUP_SPEED, new ActionListener() {
 			@Override
@@ -105,6 +95,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		powerTimer.start();
 	}
 
+
 	void setup() {
 		window = new JFrame("Zombies");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -112,18 +103,14 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		window.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		drPanel = new DrawingPanel();
 		drPanel.addKeyListener(this);
-		drPanel.addMouseListener(this);
 		window.add(drPanel);
 		
-		weapons.add(new Weapon(0));
-		weapons.add(new Weapon(1));
-		weapons.add(new Weapon(2));	
-		lblWeapon.setText(weapons.get(0).name);	
-		drPanel.add(lblWeapon);
-		
-		lblAmmo = new JLabel("AMMO: "+ weapons.get(0).getAmmo());
-		drPanel.add(lblAmmo);
-
+		Weapon pistol = new Weapon(1);
+		weapons.add(pistol);
+		Weapon rifle = new Weapon(2);
+		weapons.add(rifle);
+		Weapon shotgun = new Weapon(3);
+		weapons.add(shotgun);
 
 		backImg = loadImage("desert.jpg");
 		genBuildings();
@@ -173,7 +160,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 
 	}
-	
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
 			player.y -= player.vy;
@@ -217,7 +203,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			if (z.x+mapX > panW/2) z.vx = -1;
 			if (z.y+mapY < panH/2) z.vy = 1;
 			if (z.y+mapY > panH/2) z.vy = -1;	
-				//z.vx = z.vy = 0;		//For testing to stop movement
+			//z.vx = z.vy = 0;		//For testing to stop movement
 			
 
 			if (z.type == "light") {
@@ -274,12 +260,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 
-	void moveBullets() {
-		for(Bullet b : bullets) {
-			b.x+=b.vx;
-			b.y+=b.vy;
-		}
-	}
 
 	BufferedImage loadImage(String fn) {
 		BufferedImage image = null;		
@@ -303,7 +283,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		@Override
 		public void paintComponent(Graphics g) {
 			//drPanel.requestFocus();
-			panH = this.getHeight();
 			panW = this.getWidth();
 			panH = this.getHeight();			
 
@@ -378,15 +357,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				p.paint(g);
 			}
 			g.drawString("" + invincibleSeconds, 100, 100);
-			
-			for (Bullet b:bullets) {
-				b.paint(g);
-			}
 		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {}
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
@@ -405,12 +381,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 		}
 	}
+
 	@Override
 	public void keyReleased(KeyEvent e) {}
 
 	@Override
+
 	public void mouseClicked(MouseEvent e) {
 	}
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(SwingUtilities.isRightMouseButton(e)){
@@ -429,6 +408,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 		lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());		
 	}
+
 	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
@@ -438,7 +418,5 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	@Override
 	public void mouseExited(MouseEvent e) {
 	}
-
-
 
 }
