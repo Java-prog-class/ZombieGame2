@@ -4,7 +4,7 @@ class Weapon {
 	String name;
 	int maxAmmo;
 	private int damage;
-	private int ammo;
+	int ammo;
 
 	Weapon(int weaponNumber){
 		if (weaponNumber == 0){

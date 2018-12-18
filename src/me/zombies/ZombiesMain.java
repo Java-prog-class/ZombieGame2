@@ -389,9 +389,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			int mx = e.getX();
 			int my = e.getY();
 			int w = player.currentWeapon;
-			//bullets.add(new Bullet(0,0));
-			bullets.add(weapons.get(w).shoot(mx,my,player.currentWeapon, panW/2, panH/2));
-			//System.out.println("AHH");
+			if (weapons.get(w).getAmmo() == 0) weapons.get(w).ammo = 0;
+			else bullets.add(weapons.get(w).shoot(mx,my,player.currentWeapon, panW/2, panH/2));
 			
 		}
 		lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());		
