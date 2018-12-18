@@ -4,7 +4,7 @@ class Weapon {
 	String name;
 	int maxAmmo;
 	private int damage;
-	int ammo;
+	private int ammo;
 
 	Weapon(int weaponNumber){
 		if (weaponNumber == 0){
@@ -46,6 +46,11 @@ class Weapon {
 			vy = Bullet.speds * Math.sin(angle);
 		}
 		ammo--;
+		if (ammo < 0) ammo = 0;
+		
+		else { 
+
+		}
 		return new Bullet(vx,vy,x,y);
 	}
 	void reload() {
