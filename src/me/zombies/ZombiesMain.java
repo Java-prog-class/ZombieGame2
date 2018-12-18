@@ -3,6 +3,7 @@ package me.zombies;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,11 +12,13 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -27,34 +30,34 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			public void run() {
 				new ZombiesMain();
 			}
-		});
-		
+		});		
 	}
 
 	static int panW = 800, panH = 500;
 	static int round = 1;
-	static int mapSpeedX = 0;
-	static int mapSpeedY = 0;
 	static int mapX = 0, mapY = 0;
 	final static int TZ_SPEED = 10;
-	final static int POWERUP_SPEED = 1000;
+	final static int POWERUP_SPEED = 100;
 	boolean invincible = false;
 	
-	//Counters
 	double invincibleSeconds = 0;
 	double damageSeconds = 0;
 	double speedSeconds = 0;
-	
 
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
-	Player player = new Player();	
+	Player player = new Player();
+	JLabel lblWeapon = new JLabel();
+	JLabel lblAmmo = new JLabel();
+	String name = "";
 
 	private BufferedImage backImg = null;
+	
 	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
 	ArrayList<Powerup> powerups = new ArrayList<Powerup>();
+	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 
 	long t1 = System.currentTimeMillis();
 	
@@ -62,19 +65,20 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		setup();
 		spawnEnemies(round*10);
 		spawnPowerups(5);
-		
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				long t2 = System.currentTimeMillis();
+				//if (t2-t1 < 15) continue;
+				//System.out.println(""+(t2-t1));
 				t1=t2;
 				moveZombies();
+				moveBullets();
 				drPanel.repaint();
 				if (Player.HP <= 0) System.exit(0);
 			}
 		});
 		moveTimer.start();
-
 
 		Timer powerTimer = new Timer(POWERUP_SPEED, new ActionListener() {
 			@Override
@@ -95,7 +99,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		powerTimer.start();
 	}
 
-
 	void setup() {
 		window = new JFrame("Zombies");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -103,14 +106,18 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		window.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		drPanel = new DrawingPanel();
 		drPanel.addKeyListener(this);
+		drPanel.addMouseListener(this);
 		window.add(drPanel);
 		
-		Weapon pistol = new Weapon(1);
-		weapons.add(pistol);
-		Weapon rifle = new Weapon(2);
-		weapons.add(rifle);
-		Weapon shotgun = new Weapon(3);
-		weapons.add(shotgun);
+		weapons.add(new Weapon(0));
+		weapons.add(new Weapon(1));
+		weapons.add(new Weapon(2));	
+		lblWeapon.setText(weapons.get(0).name);	
+		drPanel.add(lblWeapon);
+		
+		lblAmmo = new JLabel("AMMO: "+ weapons.get(0).getAmmo());
+		drPanel.add(lblAmmo);
+
 
 		backImg = loadImage("desert.jpg");
 		genBuildings();
@@ -160,6 +167,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 
 	}
+	
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
 			player.y -= player.vy;
@@ -178,8 +186,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			mapX += player.vx;
 		}
 				
-		for(Building bd : buildings) {			
-			if(bd.intersects(player)) {;
+		for(Building bd : buildings) {		
+			if(bd.intersects(player)) {
 				if(direction.equals("right")) {
 					mapX += player.vx;
 					player.x -= player.vx;
@@ -202,8 +210,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			if (z.x+mapX < panW/2) z.vx = 1;
 			if (z.x+mapX > panW/2) z.vx = -1;
 			if (z.y+mapY < panH/2) z.vy = 1;
-			if (z.y+mapY > panH/2) z.vy = -1;	
-			//z.vx = z.vy = 0;		//For testing to stop movement
+			if (z.y+mapY > panH/2) z.vy = -1;		
 			
 
 			if (z.type == "light") {
@@ -218,7 +225,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.x += z.vx;
 				z.y += z.vy;
 			}
-
+		
 			//Detect if zombie and player are in the same location
 			if (z.intersects(player)) {
 				if (!invincible) player.decreaseHP(100, z);
@@ -228,7 +235,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (player.y-player.height < z.y) z.y += 30;	//Approach from beneath
 				if (player.y+player.height > z.y) z.y -= 30;	//Approach from above
 				break;
-			}		
+			}
 		}
 	}
 
@@ -260,6 +267,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 
+	void moveBullets() {
+		for(Bullet b : bullets) {
+			b.x+=b.vx;
+			b.y+=b.vy;
+		}
+	}
 
 	BufferedImage loadImage(String fn) {
 		BufferedImage image = null;		
@@ -283,6 +296,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		@Override
 		public void paintComponent(Graphics g) {
 			//drPanel.requestFocus();
+			panH = this.getHeight();
 			panW = this.getWidth();
 			panH = this.getHeight();			
 
@@ -327,7 +341,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 			g.setColor(Color.GREEN.darker());
 			g.drawImage(backImg, 0, 0, panW, panH, drPanel);	//background image
-			
 
 			for(Building bd : buildings) {	
 				bd.paint(g);				
@@ -337,7 +350,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			g.fillOval(player.x +mapX, player.y+mapY, player.width, player.height);
 
 			g.setColor(Color.BLACK);
-			
 			g.drawRect(10, 10, 500, 20);			
 			g.setColor(Color.RED);
 			g.fillRect(10, 10, Player.HP/2, 20);
@@ -356,13 +368,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (p.type.equals("IncreaseDamage")) g.setColor(Color.black);
 				p.paint(g);
 			}
-			g.drawString("" + invincibleSeconds, 100, 100);
+			
+			for (Bullet b:bullets) {
+				b.paint(g);
+			}
 		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {}
-
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
@@ -381,15 +395,11 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 		}
 	}
-
 	@Override
 	public void keyReleased(KeyEvent e) {}
-
 	@Override
-
 	public void mouseClicked(MouseEvent e) {
 	}
-
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(SwingUtilities.isRightMouseButton(e)){
@@ -401,14 +411,12 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			int mx = e.getX();
 			int my = e.getY();
 			int w = player.currentWeapon;
-			//bullets.add(new Bullet(0,0));
-			bullets.add(weapons.get(w).shoot(mx,my,player.currentWeapon, panW/2, panH/2));
-			//System.out.println("AHH");
-			
+			if (weapons.get(w).getAmmo() == 0) weapons.get(w).ammo = 0;
+			else bullets.add(weapons.get(w).shoot(mx,my,player.currentWeapon, panW/2, panH/2));
+			moveBullets();
 		}
 		lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());		
 	}
-
 	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
