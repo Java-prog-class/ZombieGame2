@@ -3,7 +3,6 @@ package me.zombies;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +11,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -251,6 +249,22 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 
+	void killZombies() {
+		for (Bullet b: bullets) {
+			for(Zombie z: zombies) {
+				if (z.intersects(b)) {
+					z.decreaseHealth(weapons.get(player.currentWeapon).getDamage());
+					bullets.remove(b);
+					System.out.println("yeet");
+				}
+				
+				break;				
+			}
+				break;		
+		}	
+		
+	}
+	
 	BufferedImage loadImage(String fn) {
 		BufferedImage image = null;		
 		InputStream inputStr = ZombiesMain.class.getClassLoader().getResourceAsStream(fn);
@@ -368,8 +382,9 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
 			movePlayer("down");
 		}
-		if (e.getKeyCode() == KeyEvent.VK_Q) {
-
+		if (e.getKeyCode() == KeyEvent.VK_R) {
+			weapons.get(player.currentWeapon).reload();
+			lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());		
 		}
 	}
 	@Override
