@@ -28,7 +28,8 @@ class Weapon {
 	}
 
 	Bullet shoot(int mx,int my,int weaponNumber,int x,int y) {
-		double vx=ZombiesMain.panW/2,vy=ZombiesMain.panH/2;
+		//double vx=ZombiesMain.panW/2,vy=ZombiesMain.panH/2;
+		double vx, vy;
 		double dX=mx-x,dY=my-y;
 		double angle=Math.atan2(dY, dX);
 
