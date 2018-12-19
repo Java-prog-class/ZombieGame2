@@ -1,10 +1,17 @@
 package me.zombies;
 
+/* this contains the weapons:
+ * their type, angle, and direction of shooting 
+ * 
+ */
+
 class Weapon {
 	String name;
 	int maxAmmo;
 	private int damage;
 	int ammo;
+	int bulletHP;
+	int speed;
 
 	//each weapon's properties
 	Weapon(int weaponNumber){
@@ -13,18 +20,21 @@ class Weapon {
 			damage = 100;
 			maxAmmo = 10;
 			ammo = 10;
+			bulletHP = 10;
 		}
 		else if (weaponNumber == 1){
 			name = "Rifle";
 			damage = 150;
 			maxAmmo = 5;
 			ammo = 5;
+			bulletHP = 15;
 		}
 		else if (weaponNumber == 2){
 			name = "Shotgun";
 			damage = 100;
 			maxAmmo = 2;
 			ammo = 2;
+			bulletHP = 20;
 		}
 	}
 
@@ -52,7 +62,7 @@ class Weapon {
 		else { 
 
 		}
-		return new Bullet(vx,vy,x,y);
+		return new Bullet(vx,vy,x,y, bulletHP);
 	}
 	
 	//reload lol
@@ -66,6 +76,9 @@ class Weapon {
 	//tell us the ammo
 	int getAmmo() {
 		return ammo;
+	}
+	int getBHP() {
+		return bulletHP;
 	}
 
 }

@@ -210,7 +210,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			if (z.y+mapY < panH/2) z.vy = 1;
 			if (z.y+mapY > panH/2) z.vy = -1;		
 
-
 			if (z.type == "light") {
 				z.x += z.vx*3;
 				z.y += z.vy*3;
@@ -240,7 +239,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			for(Zombie z : zombies) {
 				if(z.intersects(bd)) {
 					if(bd.x > z.x && bd.width < z.x)z.x = z.x-10;
-					System.out.println("The Zombie boi hit me");
 				}
 			}
 		}
@@ -280,6 +278,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			b.x+=b.vx;
 			b.y+=b.vy;
 		}
+		killZombies();
 	}
 	
 	//make the zombos disappear
@@ -287,14 +286,11 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		for (Bullet b: bullets) {
 			for(Zombie z: zombies) {
 				if (z.intersects(b)) {
-					z.decreaseHealth(weapons.get(player.currentWeapon).getDamage());
-					bullets.remove(b);
 					System.out.println("yeet");
-				}
-				
-				break;				
-			}
-				break;		
+					z.decreaseHealth(weapons.get(player.currentWeapon).getDamage());
+					b.decreaseBHP(weapons.get(player.currentWeapon).getBHP());
+				}				
+			}	
 		}	
 		
 	}
@@ -430,19 +426,26 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	@Override
 	//LEFT CLICK TO SHOOT, RIGHT CLICK TO CHANGE WEAPON
 	public void mousePressed(MouseEvent e) {
+		
 		if(SwingUtilities.isRightMouseButton(e)){
 			player.currentWeapon++;
 			if (player.currentWeapon>2) player.currentWeapon=0;
 			lblWeapon.setText(weapons.get(player.currentWeapon).name);
 		}
 		else {
+			//shoot
 			int mx = e.getX();
 			int my = e.getY();
 			int w = player.currentWeapon;
-			if (weapons.get(w).getAmmo() == 0) weapons.get(w).ammo = 0;
-			else bullets.add(weapons.get(w).shoot(mx,my,player.currentWeapon, panW/2, panH/2));
-			
+			if (weapons.get(w).getAmmo() == 0) {
+				//weapons.get(w).ammo = 0;
+				return; // don't shoot if you have no ammo
+			}
+			else {
+				bullets.add(weapons.get(w).shoot(mx,my,player.currentWeapon, panW/2, panH/2));
+			}			
 		}
+		
 		lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());		
 	}
 	@Override

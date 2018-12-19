@@ -17,7 +17,6 @@ class Zombie extends Rectangle {
 		width = height = 15;
 	}
 	void decreaseHealth(int n) {
-		
 		if (type == "light") {
 			health -= n/Math.random()*.25;
 		}
@@ -30,7 +29,7 @@ class Zombie extends Rectangle {
 	}
 	
 	void paint(Graphics g) {
-		g.fillOval(x+ZombiesMain.mapX, y+ZombiesMain.mapY, width, height);
+		g.fillOval(x, y, width, height);
 	}
 	
 	int getHealth() {

@@ -3,12 +3,10 @@ package me.zombies;
 import java.awt.Rectangle;
 
 class Player extends Rectangle{
-	int x,y,r;
 	int speed=10;
 	int vx = 10, vy = 10;
 	static int HP = 1000;
 	int currentWeapon = 0;
-	int width,height;
 	
 	Player(){
 		x=ZombiesMain.panW/2;
