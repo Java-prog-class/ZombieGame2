@@ -32,7 +32,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	static int mapSpeedX = 0;
 	static int mapSpeedY = 0;
 	static int mapX = 0, mapY = 0;
-	final static int TZ_SPEED = 10;
+	final static int TZ_SPEED = 20;
 	final static int POWERUP_SPEED = 100;
 	boolean invincible = false;
 
@@ -58,6 +58,9 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//long t2 = System.currentTimeMillis();
+				//System.out.println(""+(t2-t1));
+				//t1=t2;
 				moveZombies();
 				moveBullets();
 				drPanel.repaint();
@@ -162,22 +165,22 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			player.x -= player.vx;
 			mapX += player.vx;
 		}
-				
+
 		for(Building bd : buildings) {			
 			if(bd.intersects(player)) {;
-				if(direction.equals("right")) {
-					mapX += player.vx;
-					player.x -= player.vx;
-				}else if(direction.equals("left")) {
-					mapX -= player.vx;
-					player.x += player.vx;
-				}else if(direction.equals("up")) {
-					mapY -= player.vy;
-					player.y += player.vy;
-				}else if(direction.equals("down")) {
-					mapY += player.vy;
-					player.y -= player.vy;
-				}
+			if(direction.equals("right")) {
+				mapX += player.vx;
+				player.x -= player.vx;
+			}else if(direction.equals("left")) {
+				mapX -= player.vx;
+				player.x += player.vx;
+			}else if(direction.equals("up")) {
+				mapY -= player.vy;
+				player.y += player.vy;
+			}else if(direction.equals("down")) {
+				mapY += player.vy;
+				player.y -= player.vy;
+			}
 			}
 		}	
 	}
@@ -188,7 +191,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			if (z.x+mapX > panW/2) z.vx = -1;
 			if (z.y+mapY < panH/2) z.vy = 1;
 			if (z.y+mapY > panH/2) z.vy = -1;		
-			
+
 
 			if (z.type == "light") {
 				z.x += z.vx*3;
@@ -213,6 +216,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (player.y+player.height > z.y) z.y -= 30;	//Approach from above
 				break;
 			}		
+		}
+		//checking for intersection between buildings and zombies
+		for(Building bd : buildings) {
+			for(Zombie z : zombies) {
+				if(z.intersects(bd)) {
+					if(bd.x > z.x && bd.width < z.x)z.x = z.x-10;
+					System.out.println("The Zombie boi hit me");
+				}
+			}
 		}
 	}
 
@@ -324,7 +336,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (panW > 10) screenInit = true;
 			}
 			//***********************************************************************
-			
+
 			super.paintComponent(g); //clear screen and repaint using background color
 			Graphics2D g2 = (Graphics2D) g;		
 

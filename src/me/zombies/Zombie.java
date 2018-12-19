@@ -9,9 +9,6 @@ class Zombie extends Rectangle {
 	String type = "medium";	//light, medium, or heavy	
 	int vx, vy;	//Speed	
 
-//	
-	//int r = 15;	//Radius of drawing
-		
 	public Zombie(String type) {	 
 		//Set various types
 		if (type.equals("light")) this.type = "light";
