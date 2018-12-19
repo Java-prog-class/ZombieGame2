@@ -35,7 +35,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	static int mapSpeedX = 0;
 	static int mapSpeedY = 0;
 	static int mapX = 0, mapY = 0;
-	final static int TZ_SPEED = 10;
+	final static int TZ_SPEED = 20;
 	final static int POWERUP_SPEED = 100;
 	boolean invincible = false;
 
@@ -49,7 +49,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
 
-
+	//long t1 = System.currentTimeMillis();
 
 	ZombiesMain(){
 		setup();
@@ -58,6 +58,9 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//long t2 = System.currentTimeMillis();
+				//System.out.println(""+(t2-t1));
+				//t1=t2;
 				moveZombies();
 				drPanel.repaint();
 				if (Player.HP <= 0) System.exit(0);
@@ -183,6 +186,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.y += z.vy;
 			}
 
+			
+			
 
 			//Detect if zombie and player are in the same location
 			if (z.intersects(player)) {
@@ -194,6 +199,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (player.y+player.height > z.y) z.y -= 30;	//Approach from above
 				break;
 			}		
+		}
+		//checking for intersection between buildings and zombies
+		for(Building bd : buildings) {
+			for(Zombie z : zombies) {
+				if(z.intersects(bd)) {
+					if(bd.x > z.x && bd.width < z.x)z.x = z.x-10;
+					System.out.println("The Zombie boi hit me");
+				}
+			}
 		}
 	}
 

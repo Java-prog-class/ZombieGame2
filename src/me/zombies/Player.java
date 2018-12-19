@@ -6,7 +6,7 @@ import javax.swing.*;
  class Player extends Rectangle{
 	
 	int vx = 10, vy = 10;
-	static int HP = 1000;
+	static int HP = 10000000;
 	Weapon currentWeapon = null;
 
 	Player(){
