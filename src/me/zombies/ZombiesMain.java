@@ -183,8 +183,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			player.x -= player.vx;
 			mapX += player.vx;
 		}
-				
-		for(Building bd : buildings) {	
+
+		for(Building bd : buildings) {			
 			if(bd.intersects(player)) {
 				if(direction.equals("right")) {
 					mapX += player.vx;
@@ -200,8 +200,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 					player.y -= player.vy;
 				}
 			}
-		}
-	}	
+		}	
+	}
 
 	void moveZombies() {
 		for (Zombie z: zombies) {
@@ -239,8 +239,9 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		for(Building bd : buildings) {
 			for(Zombie z : zombies) {
 				if(z.intersects(bd)) {
-					if(bd.x > z.x && bd.width < z.x)z.x = z.x-10;
-					//System.out.println("The Zombie boi hit me");
+					if(bd.x > z.x && bd.width < z.x)z.x = z.x-10;//left of building
+					if(bd.x < z.x && bd.width < z.x)z.x = z.x+10;//right of building
+					if(bd.y < z.y && bd.height < z.height)z.y = z.y - 10;// of building
 				}
 			}
 		}
