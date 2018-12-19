@@ -147,20 +147,20 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 
 		for(Building bd : buildings) {			
-			if(bd.intersects(player)) {;
-			if(direction.equals("right")) {
-				mapX += player.vx;
-				player.x -= player.vx;
-			}else if(direction.equals("left")) {
-				mapX -= player.vx;
-				player.x += player.vx;
-			}else if(direction.equals("up")) {
-				mapY -= player.vy;
-				player.y += player.vy;
-			}else if(direction.equals("down")) {
-				mapY += player.vy;
-				player.y -= player.vy;
-			}
+			if(bd.intersects(player)) {
+				if(direction.equals("right")) {
+					mapX += player.vx;
+					player.x -= player.vx;
+				}else if(direction.equals("left")) {
+					mapX -= player.vx;
+					player.x += player.vx;
+				}else if(direction.equals("up")) {
+					mapY -= player.vy;
+					player.y += player.vy;
+				}else if(direction.equals("down")) {
+					mapY += player.vy;
+					player.y -= player.vy;
+				}
 			}
 		}	
 	}
@@ -186,8 +186,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.y += z.vy;
 			}
 
-			
-			
+
+
 
 			//Detect if zombie and player are in the same location
 			if (z.intersects(player)) {
@@ -204,7 +204,9 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		for(Building bd : buildings) {
 			for(Zombie z : zombies) {
 				if(z.intersects(bd)) {
-					if(bd.x > z.x && bd.width < z.x)z.x = z.x-10;
+					if(bd.x > z.x && bd.width < z.x)z.x = z.x-10;//left of building
+					if(bd.x < z.x && bd.width < z.x)z.x = z.x+10;//right of building
+					if(bd.y < z.y && bd.height < z.height)z.y = z.y - 10;// of building
 					System.out.println("The Zombie boi hit me");
 				}
 			}
