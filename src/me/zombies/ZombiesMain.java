@@ -200,6 +200,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 					player.y -= player.vy;
 				}
 			}
+			}
 		}	
 	}
 
@@ -209,7 +210,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			if (z.x+mapX > panW/2) z.vx = -1;
 			if (z.y+mapY < panH/2) z.vy = 1;
 			if (z.y+mapY > panH/2) z.vy = -1;		
-			
+
 
 			if (z.type == "light") {
 				z.x += z.vx*3;
@@ -233,6 +234,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (player.y-player.height < z.y) z.y += 30;	//Approach from beneath
 				if (player.y+player.height > z.y) z.y -= 30;	//Approach from above
 				break;
+			}
+		}
+		//checking for intersection between buildings and zombies
+		for(Building bd : buildings) {
+			for(Zombie z : zombies) {
+				if(z.intersects(bd)) {
+					if(bd.x > z.x && bd.width < z.x)z.x = z.x-10;
+					System.out.println("The Zombie boi hit me");
+				}
 			}
 		}
 	}
@@ -347,7 +357,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (panW > 10) screenInit = true;
 			}
 			//***********************************************************************
-			
+
 			super.paintComponent(g); //clear screen and repaint using background color
 			Graphics2D g2 = (Graphics2D) g;		
 
