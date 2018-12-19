@@ -1,5 +1,5 @@
 package me.zombies;
-
+//creating bullet(s) object
 import java.awt.*;
 
 public class Bullet extends Rectangle{

@@ -6,6 +6,7 @@ class Weapon {
 	private int damage;
 	int ammo;
 
+	//each weapon's properties
 	Weapon(int weaponNumber){
 		if (weaponNumber == 0){
 			name = "Pistol";
@@ -27,8 +28,8 @@ class Weapon {
 		}
 	}
 
+	//Calculate angle and direction of shoot
 	Bullet shoot(int mx,int my,int weaponNumber,int x,int y) {
-		//double vx=ZombiesMain.panW/2,vy=ZombiesMain.panH/2;
 		double vx, vy;
 		double dX=mx-x,dY=my-y;
 		double angle=Math.atan2(dY, dX);
@@ -53,13 +54,16 @@ class Weapon {
 		}
 		return new Bullet(vx,vy,x,y);
 	}
+	
+	//reload lol
 	void reload() {
 		ammo = maxAmmo;
 	}
-
+	//zombo damage
 	int getDamage() {
 		return damage;
 	}
+	//tell us the ammo
 	int getAmmo() {
 		return ammo;
 	}

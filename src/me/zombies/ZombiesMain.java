@@ -273,14 +273,16 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 		}
 	}
-
+	
+	//to move the bullets :)
 	void moveBullets() {
 		for(Bullet b : bullets) {
 			b.x+=b.vx;
 			b.y+=b.vy;
 		}
 	}
-
+	
+	//make the zombos disappear
 	void killZombies() {
 		for (Bullet b: bullets) {
 			for(Zombie z: zombies) {
@@ -414,6 +416,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
 			movePlayer("down");
 		}
+		//PRESS R TO RELOAD
 		if (e.getKeyCode() == KeyEvent.VK_R) {
 			weapons.get(player.currentWeapon).reload();
 			lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());		
@@ -425,6 +428,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	public void mouseClicked(MouseEvent e) {
 	}
 	@Override
+	//LEFT CLICK TO SHOOT, RIGHT CLICK TO CHANGE WEAPON
 	public void mousePressed(MouseEvent e) {
 		if(SwingUtilities.isRightMouseButton(e)){
 			player.currentWeapon++;
