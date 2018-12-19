@@ -210,7 +210,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			if (z.y+mapY < panH/2) z.vy = 1;
 			if (z.y+mapY > panH/2) z.vy = -1;		
 
-
 			if (z.type == "light") {
 				z.x += z.vx*3;
 				z.y += z.vy*3;
@@ -240,7 +239,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			for(Zombie z : zombies) {
 				if(z.intersects(bd)) {
 					if(bd.x > z.x && bd.width < z.x)z.x = z.x-10;
-					System.out.println("The Zombie boi hit me");
 				}
 			}
 		}
@@ -280,6 +278,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			b.x+=b.vx;
 			b.y+=b.vy;
 		}
+		killZombies();
 	}
 	
 	//make the zombos disappear
@@ -287,14 +286,11 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		for (Bullet b: bullets) {
 			for(Zombie z: zombies) {
 				if (z.intersects(b)) {
-					z.decreaseHealth(weapons.get(player.currentWeapon).getDamage());
-					bullets.remove(b);
 					System.out.println("yeet");
-				}
-				
-				break;				
-			}
-				break;		
+					z.decreaseHealth(weapons.get(player.currentWeapon).getDamage());
+					b.decreaseBHP(weapons.get(player.currentWeapon).getBHP());
+				}				
+			}	
 		}	
 		
 	}
