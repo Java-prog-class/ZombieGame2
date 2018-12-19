@@ -1,14 +1,13 @@
 package me.zombies;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Rectangle;
 
- class Player extends Rectangle{
+class Player extends Rectangle {
 	
 	int vx = 10, vy = 10;
-	static int HP = 10000000;
-	Weapon currentWeapon = null;
-
+	static int HP = 1000;
+	int currentWeapon = 0;
+	
 	Player(){
 		x=ZombiesMain.panW/2;
 		y=ZombiesMain.panH/2;

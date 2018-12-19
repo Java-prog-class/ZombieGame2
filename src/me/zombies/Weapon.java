@@ -2,49 +2,66 @@ package me.zombies;
 
 class Weapon {
 	String name;
-	int type;
 	int maxAmmo;
 	private int damage;
-	private static int ammo;
-	static final int PISTOL = 1;
-	static final int RIFLE = 2;
-	static final int SHOTGUN = 3;
+	int ammo;
 
-	Weapon(int type){
-		this.type = type; // store the weapon number
-
-		switch(type) {
-		case PISTOL:
+	Weapon(int weaponNumber){
+		if (weaponNumber == 0){
+			name = "Pistol";
 			damage = 100;
-			maxAmmo = 30;
-			ammo = 30;
-			name = "pistol";
-			break;
-		case RIFLE:
+			maxAmmo = 10;
+			ammo = 10;
+		}
+		else if (weaponNumber == 1){
+			name = "Rifle";
 			damage = 150;
-			maxAmmo = 15;
-			ammo = 15;
-			name = "rifle";
-			break;
-		case SHOTGUN:
-			damage = 200;
 			maxAmmo = 5;
 			ammo = 5;
-			name = "shotgun";
-			break;
+		}
+		else if (weaponNumber == 2){
+			name = "Shotgun";
+			damage = 100;
+			maxAmmo = 2;
+			ammo = 2;
 		}
 	}
 
-	static void shoot() {
-		
+	Bullet shoot(int mx,int my,int weaponNumber,int x,int y) {
+		//double vx=ZombiesMain.panW/2,vy=ZombiesMain.panH/2;
+		double vx, vy;
+		double dX=mx-x,dY=my-y;
+		double angle=Math.atan2(dY, dX);
+
+		if (weaponNumber ==0) {
+			vx = Bullet.spedp * Math.cos(angle);
+			vy = Bullet.spedp * Math.sin(angle);
+		}
+		else if (weaponNumber ==1) {
+			vx = Bullet.spedr * Math.cos(angle);
+			vy = Bullet.spedr * Math.sin(angle);
+		}
+		else {
+			vx = Bullet.speds * Math.cos(angle);
+			vy = Bullet.speds * Math.sin(angle);
+		}
 		ammo--;
+		if (ammo < 0) ammo = 0;
+		
+		else { 
+
+		}
+		return new Bullet(vx,vy,x,y);
 	}
-	void reload(int numBullets) {
-		ammo += numBullets;
-		if (ammo > maxAmmo) ammo = maxAmmo;
+	void reload() {
+		ammo = maxAmmo;
 	}
 
 	int getDamage() {
 		return damage;
 	}
+	int getAmmo() {
+		return ammo;
+	}
+
 }
