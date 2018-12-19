@@ -24,17 +24,23 @@ import javax.swing.Timer;
 public class ZombiesMain implements MouseListener, KeyListener{
 
 	public static void main(String[] args) {
-		new ZombiesMain();
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new ZombiesMain();
+			}
+		});		
 	}
 
 	static int panW = 800, panH = 500;
 	static int round = 1;
-	static int mapSpeedX = 0;
-	static int mapSpeedY = 0;
 	static int mapX = 0, mapY = 0;
 	final static int TZ_SPEED = 20;
 	final static int POWERUP_SPEED = 100;
 	boolean invincible = false;
+	
+	double invincibleSeconds = 0;
+	double damageSeconds = 0;
+	double speedSeconds = 0;
 
 	JFrame window = new JFrame();
 	DrawingPanel drPanel;
@@ -51,6 +57,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	ArrayList<Powerup> powerups = new ArrayList<Powerup>();
 	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 
+	long t1 = System.currentTimeMillis();
+	
 	ZombiesMain(){
 		setup();
 		spawnEnemies(round*10);
@@ -58,9 +66,10 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		Timer moveTimer = new Timer(TZ_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//long t2 = System.currentTimeMillis();
+				long t2 = System.currentTimeMillis();
+				//if (t2-t1 < 15) continue;
 				//System.out.println(""+(t2-t1));
-				//t1=t2;
+				t1=t2;
 				moveZombies();
 				moveBullets();
 				drPanel.repaint();
@@ -72,8 +81,17 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		Timer powerTimer = new Timer(POWERUP_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				invincibleSeconds += POWERUP_SPEED/1000;
+				damageSeconds += POWERUP_SPEED/1000;
+				speedSeconds += POWERUP_SPEED/1000;
+				
 				usePowerups();
 				drPanel.repaint();
+				
+				if (invincibleSeconds == 10.0) invincible = false;
+				//if (damageSeconds == 10.0)
+				if (speedSeconds == 10.0) player.vx = player.vy -= 5;
+				
 			}
 		});
 		powerTimer.start();
@@ -205,7 +223,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				z.x += z.vx;
 				z.y += z.vy;
 			}
-
+		
 			//Detect if zombie and player are in the same location
 			if (z.intersects(player)) {
 				if (!invincible) player.decreaseHP(100, z);
@@ -215,7 +233,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				if (player.y-player.height < z.y) z.y += 30;	//Approach from beneath
 				if (player.y+player.height > z.y) z.y -= 30;	//Approach from above
 				break;
-			}		
+			}
 		}
 		//checking for intersection between buildings and zombies
 		for(Building bd : buildings) {
@@ -237,13 +255,15 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				}
 				if (p.type.equals("Invincible")) {
 					invincible = true;
+					invincibleSeconds = 0;
 				}
 				if (p.type.equals("IncreaseDamage")) {
-					
+					damageSeconds = 0;
 				}
 				if (p.type.equals("IncreaseSpeed")) {
 					player.vx += 5;
 					player.vy += 5;
+					speedSeconds = 0;
 				}
 				if (p.type.equals("RestoreHealth")) {
 					player.HP = 1000;
@@ -401,7 +421,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {}
-
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
