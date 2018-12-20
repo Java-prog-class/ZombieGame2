@@ -70,6 +70,8 @@ public class ZombiesMain implements MouseListener, KeyListener{
 				//if (t2-t1 < 15) continue;
 				//System.out.println(""+(t2-t1));
 				t1=t2;
+				movePlayer();
+				reload();
 				moveZombies();
 				moveBullets();
 				drPanel.repaint();
@@ -183,49 +185,105 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 
 	}
-	void movePlayer(String direction) {
+	
+	void movePlayer() {
+		if (isKeyDown(KeyEvent.VK_D) || isKeyDown(KeyEvent.VK_RIGHT)) {
+			movePlayer("right");
+		}
+		if (isKeyDown(KeyEvent.VK_W) || isKeyDown(KeyEvent.VK_UP)) {
+			movePlayer("up");
+		}
+		if (isKeyDown(KeyEvent.VK_A) || isKeyDown(KeyEvent.VK_LEFT)) {
+			movePlayer("left");
+		}
+		if (isKeyDown(KeyEvent.VK_S) || isKeyDown(KeyEvent.VK_DOWN)) {
+			movePlayer("down");
+		}
+	}
+	
+	void movePlayer(String direction) {		
 		if (direction.equals("up")) {
-			player.y -= player.vy;
-			mapY += player.vy;
-		}
-		if (direction.equals("down")) {
-			player.y += player.vy;
-			mapY -= player.vy;
-		}
-		if (direction.equals("right")) {
-			player.x += player.vx;
-			mapX -= player.vx;
-		}
-		if (direction.equals("left")) {
-			player.x -= player.vx;
-			mapX += player.vx;
-		}
-
-		for(Building bd : buildings) {	
-			if(bd.intersects(player)) {
-				if(direction.equals("right")) {
-					mapX += player.vx;
-					player.x -= player.vx;
-				}else if(direction.equals("left")) {
-					mapX -= player.vx;
-					player.x += player.vx;
-				}else if(direction.equals("up")) {
-					mapY -= player.vy;
-					player.y += player.vy;
-				}else if(direction.equals("down")) {
-					mapY += player.vy;
-					player.y -= player.vy;
+			for (Building bd : buildings) {
+				if (bd.intersects(player)) {
+					for (Zombie z : zombies) z.y -= player.vy; 
+					for (Building b : buildings) b.y -= player.vy;
+					for (Powerup p : powerups) p.y -= player.vy;
 				}
 			}
-		}	
+			for (Zombie z : zombies) z.y += player.vy;
+			for (Building b : buildings) b.y += player.vy;
+			for (Powerup p : powerups) p.y += player.vy;
+		}
+		if (direction.equals("down")) {
+			for (Building bd : buildings) {
+				if (bd.intersects(player)) {
+					for (Zombie z : zombies) z.y += player.vy; 
+					for (Building b : buildings) b.y += player.vy;
+					for (Powerup p : powerups) p.y += player.vy;
+				}
+			}
+			for (Zombie z : zombies) z.y -= player.vy;
+			for (Building b : buildings) b.y -= player.vy;
+			for (Powerup p : powerups) p.y -= player.vy;
+		}
+		if (direction.equals("right")) {
+			for (Building bd : buildings) {
+				if (bd.intersects(player)) {
+					for (Zombie z : zombies) z.x += player.vy; 
+					for (Building b : buildings) b.x += player.vy;
+					for (Powerup p : powerups) p.x += player.vy;
+				}
+			}
+			for (Zombie z : zombies) z.x -= player.vx;
+			for (Building b : buildings) b.x -= player.vx;
+			for (Powerup p : powerups) p.x -= player.vx;
+		}
+		if (direction.equals("left")) {
+			for (Building bd : buildings) {
+				if (bd.intersects(player)) {
+					for (Zombie z : zombies) z.x -= player.vy; 
+					for (Building b : buildings) b.x -= player.vy;
+					for (Powerup p : powerups) p.x -= player.vy;
+				}
+			}
+			for (Zombie z : zombies) z.x += player.vx;
+			for (Building b : buildings) b.x += player.vx;
+			for (Powerup p : powerups) p.x += player.vx;
+		}
+
+//		for(Building bd : buildings) {	
+//			if(bd.intersects(player)) {
+//				if(direction.equals("right")) {
+//					mapX += player.vx;
+//					player.x -= player.vx;
+//				}else if(direction.equals("left")) {
+//					mapX -= player.vx;
+//					player.x += player.vx;
+//				}else if(direction.equals("up")) {
+//					mapY -= player.vy;
+//					player.y += player.vy;
+//				}else if(direction.equals("down")) {
+//					mapY += player.vy;
+//					player.y -= player.vy;
+//				}
+//			}
+//		}	
+	}
+	
+	void reload() {
+		if (isKeyDown(KeyEvent.VK_R)) {
+			weapons.get(player.currentWeapon).reload();
+			lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());		
+		}
 	}
 
 	void moveZombies() {
 		for (Zombie z: zombies) {
-			if (z.x+mapX < panW/2) z.vx = 1;
-			if (z.x+mapX > panW/2) z.vx = -1;
-			if (z.y+mapY < panH/2) z.vy = 1;
-			if (z.y+mapY > panH/2) z.vy = -1;		
+			if (z.x < panW/2) z.vx = 1;
+			if (z.x > panW/2) z.vx = -1;
+			if (z.y < panH/2) z.vy = 1;
+			if (z.y > panH/2) z.vy = -1;		
+			z.vx = z.vy = 0;
 
 			if (z.type == "light") {
 				z.x += z.vx*3;
@@ -242,7 +300,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 
 			//Detect if zombie and player are in the same location
 			if (z.intersects(player)) {
-				if (!invincible) player.decreaseHP(100, z);
+//				if (!invincible) player.decreaseHP(100, z);
 				//Move zombie away after hitting player
 				if (player.x+player.width > z.x) z.x -= 30;	//Approach from right
 				if (player.x-player.width < z.x) z.x += 30;	//Approach from left
@@ -355,7 +413,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 						return;	
 					}
 					else {
-						z.x = testX;
+						z.x  = testX;
 						z.y = testY;
 					}
 				}
@@ -416,29 +474,37 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		}
 	}
 
-	@Override
-	public void keyTyped(KeyEvent e) {}
+	/** size of keysDown array **/
+	private final int numKeyCodes = 256;
+	/** Array of booleans representing characters currently held down **/
+	private boolean[] keysDown = new boolean [numKeyCodes];
+
+	public synchronized boolean isKeyDown(int key) {
+//		if ((key >=0) & (key < numKeyCodes)) 
+		return keysDown[key];
+//		return false;
+	}
+	
+
+	/******** Event handler methods ****************/
+//	Note that the key-typed event doesn't have key code information, and key-pressed and key-released events don't have key character information
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			movePlayer("right");
-		}
-		if (e.getKeyCode() == KeyEvent.VK_W|| e.getKeyCode() == KeyEvent.VK_UP) {
-			movePlayer("up");
-		}
-		if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
-			movePlayer("left");
-		}
-		if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
-			movePlayer("down");
-		}
-		if (e.getKeyCode() == KeyEvent.VK_R) {
-			weapons.get(player.currentWeapon).reload();
-			lblAmmo.setText("AMMO: "+ weapons.get(player.currentWeapon).getAmmo());		
-		}
+		int key = e.getKeyCode ();
+		keysDown [key] = true;
+
 	}
 	@Override
-	public void keyReleased(KeyEvent e) {}
+	public void keyTyped(KeyEvent e) {}
+/*	
+			
+		
+	}
+*/
+	@Override
+	public void keyReleased(KeyEvent e) {
+		keysDown [e.getKeyCode()] = false;
+	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
