@@ -31,6 +31,6 @@ public class Bullet extends Rectangle{
 	}
 	
 	void decreaseBHP(int n) {
-		
+		n--;
 	}
 }

@@ -20,7 +20,7 @@ class Weapon {
 			damage = 100;
 			maxAmmo = 10;
 			ammo = 10;
-			bulletHP = 10;
+			bulletHP = 1;
 			speed = 10;
 		}
 		else if (weaponNumber == 1){
@@ -28,7 +28,7 @@ class Weapon {
 			damage = 150;
 			maxAmmo = 5;
 			ammo = 5;
-			bulletHP = 15;
+			bulletHP = 1;
 			speed = 15;
 		}
 		else if (weaponNumber == 2){
@@ -36,7 +36,7 @@ class Weapon {
 			damage = 100;
 			maxAmmo = 2;
 			ammo = 2;
-			bulletHP = 20;
+			bulletHP = 2;
 			speed = 5;
 		}
 	}
@@ -50,25 +50,6 @@ class Weapon {
 		vx = speed * Math.cos(angle);
 		vy = speed * Math.sin(angle);
 		
-//		if (weaponNumber ==0) {
-//			vx = Bullet.spedp * Math.cos(angle);
-//			vy = Bullet.spedp * Math.sin(angle);
-//		}
-//		else if (weaponNumber ==1) {
-//			vx = Bullet.spedr * Math.cos(angle);
-//			vy = Bullet.spedr * Math.sin(angle);
-//		}
-//		else {
-//			vx = Bullet.speds * Math.cos(angle);
-//			vy = Bullet.speds * Math.sin(angle);
-//		}
-		
-		ammo--;
-		if (ammo < 0) ammo = 0;
-		
-		else { 
-
-		}
 		return new Bullet(vx,vy,x,y, bulletHP);
 	}
 	

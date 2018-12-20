@@ -278,18 +278,29 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			b.x+=b.vx;
 			b.y+=b.vy;
 			killZombies(b);
+			removeBullets();
 		}
 	}
 	//make the zombos disappear
 	void killZombies(Bullet b) {
-
 		for(Zombie z: zombies) {
 			if (z.intersects(b)) {
-				System.out.println("yeet");
 				z.decreaseHealth(weapons.get(player.currentWeapon).getDamage());
 				b.decreaseBHP(weapons.get(player.currentWeapon).getBHP());
 			}				
 		}	
+	}
+	//When BHP is 0, remove the bullets!!
+	void removeBullets() {
+		for(int i = 0; i < bullets.size(); i++) {
+			Bullet b = bullets.get(i);
+			if (b.bulletHP == 0) {
+				bullets.remove(i);
+				i--;
+				continue;
+			}
+		}
+		repaint();
 	}
 	
 	BufferedImage loadImage(String fn) {
