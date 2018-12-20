@@ -210,7 +210,6 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			if (z.y+mapY < panH/2) z.vy = 1;
 			if (z.y+mapY > panH/2) z.vy = -1;		
 
-
 			if (z.type == "light") {
 				z.x += z.vx*3;
 				z.y += z.vy*3;
@@ -274,26 +273,26 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 		}
 	}
-
+	
+	//to move the bullets :)
 	void moveBullets() {
 		for(Bullet b : bullets) {
 			b.x+=b.vx;
 			b.y+=b.vy;
 		}
+		killZombies();
 	}
-
+	
+	//make the zombos disappear
 	void killZombies() {
 		for (Bullet b: bullets) {
 			for(Zombie z: zombies) {
 				if (z.intersects(b)) {
-					z.decreaseHealth(weapons.get(player.currentWeapon).getDamage());
-					bullets.remove(b);
 					System.out.println("yeet");
-				}
-				
-				break;				
-			}
-				break;		
+					z.decreaseHealth(weapons.get(player.currentWeapon).getDamage());
+					b.decreaseBHP(weapons.get(player.currentWeapon).getBHP());
+				}				
+			}	
 		}	
 		
 	}
@@ -426,6 +425,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	public void mouseClicked(MouseEvent e) {
 	}
 	@Override
+	//LEFT CLICK TO SHOOT, RIGHT CLICK TO CHANGE WEAPON
 	public void mousePressed(MouseEvent e) {
 		if(SwingUtilities.isRightMouseButton(e)){
 			player.currentWeapon++;
