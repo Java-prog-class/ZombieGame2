@@ -168,37 +168,37 @@ public class ZombiesMain implements MouseListener, KeyListener{
 	
 	void movePlayer(String direction) {
 		if (direction.equals("up")) {
-			player.y -= player.vy;
+			//player.y -= player.vy;
 			mapY += player.vy;
 		}
 		if (direction.equals("down")) {
-			player.y += player.vy;
+			//player.y += player.vy;
 			mapY -= player.vy;
 		}
 		if (direction.equals("right")) {
-			player.x += player.vx;
+			//player.x += player.vx;
 			mapX -= player.vx;
 		}
 		if (direction.equals("left")) {
-			player.x -= player.vx;
+			//player.x -= player.vx;
 			mapX += player.vx;
 		}
 
 		for(Building bd : buildings) {			
 			if(bd.intersects(player)) {;
-			if(direction.equals("right")) {
-				mapX += player.vx;
-				player.x -= player.vx;
-			}else if(direction.equals("left")) {
-				mapX -= player.vx;
-				player.x += player.vx;
-			}else if(direction.equals("up")) {
-				mapY -= player.vy;
-				player.y += player.vy;
-			}else if(direction.equals("down")) {
-				mapY += player.vy;
-				player.y -= player.vy;
-			}
+				if(direction.equals("right")) {
+					mapX += player.vx;
+					player.x -= player.vx;
+				}else if(direction.equals("left")) {
+					mapX -= player.vx;
+					player.x += player.vx;
+				}else if(direction.equals("up")) {
+					mapY -= player.vy;
+					player.y += player.vy;
+				}else if(direction.equals("down")) {
+					mapY += player.vy;
+					player.y -= player.vy;
+				}
 			}
 		}	
 	}
@@ -277,22 +277,20 @@ public class ZombiesMain implements MouseListener, KeyListener{
 		for(Bullet b : bullets) {
 			b.x+=b.vx;
 			b.y+=b.vy;
+			killZombies(b);
 		}
-		killZombies();
 	}
 	
 	//make the zombos disappear
-	void killZombies() {
-		for (Bullet b: bullets) {
-			for(Zombie z: zombies) {
-				if (z.intersects(b)) {
-					System.out.println("yeet");
-					z.decreaseHealth(weapons.get(player.currentWeapon).getDamage());
-					b.decreaseBHP(weapons.get(player.currentWeapon).getBHP());
-				}				
-			}	
+	void killZombies(Bullet b) {
+
+		for(Zombie z: zombies) {
+			if (z.intersects(b)) {
+				System.out.println("yeet");
+				z.decreaseHealth(weapons.get(player.currentWeapon).getDamage());
+				b.decreaseBHP(weapons.get(player.currentWeapon).getBHP());
+			}				
 		}	
-		
 	}
 	
 	BufferedImage loadImage(String fn) {
@@ -368,7 +366,7 @@ public class ZombiesMain implements MouseListener, KeyListener{
 			}
 			//drawPlayer
 			g.setColor(Color.BLUE);			
-			g.fillOval(player.x +mapX, player.y+mapY, player.width, player.height);
+			g.fillOval(player.x, player.y, player.width, player.height);
 
 			g.setColor(Color.BLACK);
 			g.drawRect(10, 10, 500, 20);			
