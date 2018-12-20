@@ -10,11 +10,6 @@ import java.awt.*;
 
 public class Bullet extends Rectangle{
 	
-	//need a comment to explain why these are static
-	static int spedp=10;
-	static int speds=5;
-	static int spedr=15;
-	
 	double vx,vy;
 	int bulletHP;
 	
